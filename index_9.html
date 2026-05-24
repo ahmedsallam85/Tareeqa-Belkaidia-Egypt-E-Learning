@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
+<title>منصة الفصل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Reem+Kufi:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN: Warm Paper · Ink · Academic Refinement
+   Palette: cream paper, deep ink, indigo, olive, crimson, gold
+   Font: Reem Kufi (headings) + Tajawal (body)
+═══════════════════════════════════════════════ */
+:root{
+  --paper:#FAF7F2; --paper2:#F3EEE5; --paper3:#EDE6D6;
+  --ink:#1A1816; --ink2:#4A4642; --ink3:#8A857C; --ink4:#C4BDAF;
+  --line:#E8E1D3; --line2:#D4CDBD;
+  --indigo:#1F3A6E; --indigo2:#2C4F8E; --indigo-bg:#E8EEF8; --indigo-light:#F0F4FB;
+  --olive:#5F7039; --olive2:#4F5E2F; --olive-bg:#EDF1DE; --olive-light:#F4F7EA;
+  --crimson:#A83232; --crimson2:#8A2828; --crimson-bg:#FBE9E9; --crimson-light:#FDF2F2;
+  --gold:#8A6A1F; --gold2:#6E5418; --gold-bg:#F7EED4; --gold-light:#FBF4E4;
+  --radius:12px; --radius-sm:8px; --radius-lg:18px; --radius-xl:24px;
+  --sh1:0 1px 2px rgba(26,24,22,.05),0 1px 1px rgba(26,24,22,.04);
+  --sh2:0 4px 12px rgba(26,24,22,.07),0 1px 3px rgba(26,24,22,.04);
+  --sh3:0 12px 32px rgba(26,24,22,.12),0 4px 8px rgba(26,24,22,.05);
+  --sh4:0 24px 64px rgba(26,24,22,.16),0 8px 16px rgba(26,24,22,.06);
+  --font-body:'Tajawal',system-ui,sans-serif;
+  --font-head:'Noto Naskh Arabic',serif;
+  --transition:all .18s ease;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);min-height:100vh;direction:rtl;-webkit-text-size-adjust:100%}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:99px}
+
+/* ── HEADER ── */
+.app-header{
+  background:rgba(250,247,242,.94);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:10px 16px;
+  position:sticky;top:0;z-index:100;
+}
+.header-inner{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--indigo) 0%,var(--indigo2) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-weight:700;font-size:20px;color:var(--paper);
+  box-shadow:var(--sh2);letter-spacing:-1px;
+}
+.app-title-wrap{cursor:pointer}
+.app-title{font-family:var(--font-head);font-size:17px;font-weight:600;color:var(--ink);line-height:1.1}
+.app-title:hover{color:var(--indigo)}
+.app-subtitle{font-size:11px;color:var(--ink3);margin-top:1px}
+.app-title-input{
+  font-family:var(--font-head);font-size:17px;font-weight:600;
+  border:none;border-bottom:2px solid var(--indigo);background:transparent;
+  outline:none;width:180px;direction:rtl;
+}
+.sync-badge{
+  display:flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:20px;
+  background:var(--paper2);font-size:11px;font-weight:600;color:var(--ink3);
+  flex-shrink:0;
+}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--olive);transition:var(--transition)}
+.sync-badge.saving .sync-dot{background:var(--gold);animation:pulse-dot 1s infinite}
+.sync-badge.saving{color:var(--gold)}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── TABS ── */
+.tab-bar{
+  max-width:1080px;margin:0 auto;
+  padding:0 16px;
+  display:flex;gap:2px;
+  background:rgba(250,247,242,.94);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  position:sticky;top:61px;z-index:90;
+  overflow-x:auto;scrollbar-width:none;
+}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{
+  padding:12px 14px;border:none;background:transparent;
+  font-family:var(--font-body);font-size:13px;font-weight:600;
+  color:var(--ink3);cursor:pointer;white-space:nowrap;
+  position:relative;transition:var(--transition);
+  display:flex;align-items:center;gap:6px;
+  min-height:46px;
+}
+.tab-btn::after{
+  content:'';position:absolute;bottom:0;right:0;left:0;
+  height:2px;background:transparent;transition:var(--transition);
+}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--indigo)}
+.tab-btn.active::after{background:var(--indigo)}
+.tab-btn .tab-count{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:50%;background:var(--indigo-bg);
+  color:var(--indigo);font-size:10px;font-weight:700;
+}
+.tab-btn.active .tab-count{background:var(--indigo);color:#fff}
+.tab-label-wrap{cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.tab-label-input{
+  font-family:var(--font-body);font-size:13px;font-weight:600;
+  border:none;border-bottom:1px solid var(--indigo);background:transparent;
+  outline:none;width:80px;color:var(--indigo);
+}
+
+/* ── PANELS ── */
+.panel{display:none;max-width:1080px;margin:0 auto;padding:18px 16px}
+.panel.active{display:block;animation:fade-up .3s ease-out}
+@keyframes fade-up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION CARD ── */
+.section{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;
+  box-shadow:var(--sh1);
+}
+.section.green{
+  background:linear-gradient(135deg,var(--olive-light) 0%,var(--paper) 60%);
+  border-color:var(--olive);
+}
+.section.green .section-form{position:relative;z-index:1}
+.section-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.section-title-wrap{cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.section-title{
+  font-family:var(--font-head);font-weight:600;font-size:17px;color:var(--ink);
+  display:flex;align-items:center;gap:8px;
+}
+.section-title-num{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--indigo-bg);color:var(--indigo);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.section.green .section-title-num{background:var(--olive-bg);color:var(--olive)}
+.section-title-input{
+  font-family:var(--font-head);font-size:17px;font-weight:600;
+  border:none;border-bottom:2px solid var(--olive);background:transparent;
+  outline:none;direction:rtl;min-width:100px;
+}
+.section-sub{font-size:11px;color:var(--ink3);margin-top:3px;font-weight:500}
+.edit-title-hint{font-size:10px;color:var(--ink4);opacity:0}
+.section-title-wrap:hover .edit-title-hint{opacity:1}
+
+/* ── FORM ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-grid.single{grid-template-columns:1fr}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:600px){.form-grid,.form-grid.three{grid-template-columns:1fr}}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg.full{grid-column:1/-1}
+.label{font-size:12px;font-weight:600;color:var(--ink2)}
+.input,.select{
+  width:100%;padding:10px 12px;
+  border:1.5px solid var(--line2);border-radius:var(--radius-sm);
+  background:var(--paper);color:var(--ink);
+  font-family:var(--font-body);font-size:13px;
+  outline:none;transition:var(--transition);direction:rtl;
+  appearance:none;-webkit-appearance:none;
+  min-height:44px;
+}
+.input.ltr{direction:ltr;text-align:left}
+.input:focus,.select:focus{border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-bg)}
+.section.green .input:focus,.section.green .select:focus{border-color:var(--olive);box-shadow:0 0 0 3px var(--olive-bg)}
+.input.error{border-color:var(--crimson)}
+.select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A857C' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:left 12px center;
+  padding-left:32px;cursor:pointer;
+}
+.err-msg{font-size:11px;color:var(--crimson);display:none}
+.err-msg.show{display:block}
+.age-badge{
+  display:inline-flex;align-items:center;padding:10px 12px;
+  border:1.5px solid var(--line2);border-radius:var(--radius-sm);
+  background:var(--paper2);font-size:13px;font-weight:600;
+  color:var(--indigo);min-height:44px;
+}
+.age-badge.empty{color:var(--ink4)}
+.time-row{display:flex;gap:8px;align-items:center}
+.time-row .input{flex:1}
+.time-sep{font-size:12px;color:var(--ink3);flex-shrink:0;font-weight:600}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 18px;border-radius:var(--radius-sm);
+  font-family:var(--font-body);font-size:13px;font-weight:700;
+  cursor:pointer;transition:var(--transition);white-space:nowrap;
+  border:none;min-height:44px;appearance:none;
+  text-decoration:none;
+}
+.btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn-primary{background:var(--indigo);color:#fff}
+.btn-primary:hover{background:var(--indigo2)}
+.btn-olive{background:var(--olive);color:#fff}
+.btn-olive:hover{background:var(--olive2)}
+.btn-crimson{background:var(--crimson);color:#fff}
+.btn-crimson:hover{background:var(--crimson2)}
+.btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--line2)}
+.btn-ghost:hover{background:var(--paper2);border-color:var(--ink3)}
+.btn-icon{
+  width:36px;height:36px;padding:0;border-radius:var(--radius-sm);
+  background:transparent;border:1.5px solid var(--line2);
+  color:var(--ink3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  transition:var(--transition);font-size:14px;flex-shrink:0;
+}
+.btn-icon:hover{background:var(--paper2);color:var(--ink)}
+.btn-icon.del:hover{background:var(--crimson-bg);border-color:var(--crimson);color:var(--crimson)}
+.btn-icon.edit:hover{background:var(--gold-bg);border-color:var(--gold);color:var(--gold)}
+.btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.btn-full{width:100%;justify-content:center}
+
+/* ── CARDS ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.course-card{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--radius);padding:16px;
+  position:relative;cursor:pointer;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+  overflow:hidden;
+}
+.course-card::before{
+  content:'';position:absolute;top:0;right:0;left:0;
+  height:3px;border-radius:var(--radius) var(--radius) 0 0;
+}
+.course-card:nth-child(4n+1)::before{background:var(--indigo)}
+.course-card:nth-child(4n+2)::before{background:var(--crimson)}
+.course-card:nth-child(4n+3)::before{background:var(--olive)}
+.course-card:nth-child(4n)::before{background:var(--gold)}
+.course-card:hover{transform:translateY(-3px);box-shadow:var(--sh3);border-color:var(--line2)}
+.course-card .card-actions{
+  position:absolute;top:8px;left:8px;
+  display:flex;gap:4px;
+}
+.course-card .card-name{
+  font-family:var(--font-head);font-size:16px;font-weight:600;
+  color:var(--ink);margin-bottom:8px;line-height:1.3;
+  padding-left:72px;padding-top:2px;
+}
+.course-card .card-zoom{
+  font-size:11px;color:var(--ink3);direction:ltr;text-align:right;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  margin-bottom:10px;
+}
+.course-card .card-meta{font-size:11px;color:var(--ink3);display:flex;gap:8px;flex-wrap:wrap}
+.course-card .card-arrow{
+  position:absolute;bottom:12px;left:10px;
+  color:var(--ink4);font-size:16px;transition:var(--transition);
+}
+.course-card:hover .card-arrow{color:var(--indigo);transform:translateX(-3px)}
+
+/* Student rows */
+.student-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:var(--paper);
+  border:1px solid var(--line);border-radius:var(--radius-sm);
+  margin-bottom:6px;transition:var(--transition);
+}
+.student-row:hover{border-color:var(--line2)}
+.avatar{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:13px;font-weight:600;flex-shrink:0;
+}
+.av1{background:#E8EEF8;color:#1F3A6E}
+.av2{background:#FBE9E9;color:#A83232}
+.av3{background:#EDF1DE;color:#5F7039}
+.av4{background:#F7EED4;color:#8A6A1F}
+.av5{background:#ECE8FB;color:#4A3C8A}
+.av6{background:#FBE5D6;color:#A64F1F}
+.av7{background:#DCF0E8;color:#1F6E58}
+.av8{background:#F0E0E9;color:#8A2851}
+.stu-info{flex:1;min-width:0}
+.stu-name{font-weight:600;font-size:13px;line-height:1.3}
+.stu-meta{display:flex;gap:6px;margin-top:3px;flex-wrap:wrap;align-items:center}
+.pill{
+  display:inline-flex;align-items:center;padding:2px 8px;
+  border-radius:10px;font-size:10px;font-weight:700;
+}
+.pill-age{background:var(--indigo-bg);color:var(--indigo)}
+.pill-course{background:var(--paper2);color:var(--ink2);border:1px solid var(--line)}
+.pill-code{
+  background:var(--paper2);color:var(--ink2);
+  direction:ltr;font-family:monospace;letter-spacing:1px;font-size:11px;
+}
+.pill-code.hidden{letter-spacing:3px;font-size:12px}
+.stu-actions{display:flex;gap:4px;flex-shrink:0}
+
+/* Session cards */
+.session-card{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--radius);padding:14px 16px;
+  margin-bottom:8px;transition:var(--transition);
+  position:relative;
+}
+.session-card:hover{border-color:var(--line2)}
+.session-card.clickable{cursor:pointer}
+.session-card.clickable:hover{box-shadow:var(--sh2)}
+.session-card.completed{border-right:3px solid var(--olive)}
+.session-card.active-session{border-right:3px solid var(--crimson);background:var(--crimson-light)}
+.session-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.session-info{flex:1;min-width:0}
+.session-course{font-family:var(--font-head);font-weight:600;font-size:15px;color:var(--ink)}
+.session-time{font-size:11px;color:var(--ink3);margin-top:3px;direction:ltr;text-align:right}
+.session-btns{display:flex;gap:6px;flex-shrink:0;align-items:center;flex-wrap:wrap}
+.attend-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;
+}
+.ab-green{background:var(--olive-bg);color:var(--olive)}
+.ab-amber{background:var(--gold-bg);color:var(--gold)}
+.ab-red{background:var(--crimson-bg);color:var(--crimson)}
+.session-attendees{
+  display:flex;gap:5px;flex-wrap:wrap;
+  padding-top:8px;margin-top:8px;border-top:1px dashed var(--line);
+}
+.chip{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;
+}
+.chip-p{background:var(--olive-bg);color:var(--olive)}
+.chip-a{background:var(--crimson-bg);color:var(--crimson);opacity:.7}
+
+/* Filter pills */
+.filter-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.fpill{
+  padding:6px 14px;border:1.5px solid var(--line2);
+  border-radius:20px;font-family:var(--font-body);font-size:12px;font-weight:600;
+  color:var(--ink3);background:transparent;cursor:pointer;transition:var(--transition);
+}
+.fpill:hover{color:var(--ink);border-color:var(--ink3)}
+.fpill.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* Empty state */
+.empty{
+  text-align:center;padding:32px 16px;color:var(--ink3);
+  border:1.5px dashed var(--line2);border-radius:var(--radius);font-size:13px;
+}
+.empty .empty-icon{font-size:36px;margin-bottom:10px}
+.empty strong{display:block;color:var(--ink2);margin-bottom:4px;font-family:var(--font-head);font-size:15px}
+
+/* Inline edit overlay for rows */
+.row-edit-form{
+  background:var(--gold-light);border:1.5px solid var(--gold);
+  border-radius:var(--radius-sm);padding:12px;margin-bottom:6px;
+}
+.row-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:500px){.row-edit-grid{grid-template-columns:1fr}}
+.row-edit-actions{display:flex;gap:6px;margin-top:8px;justify-content:flex-end}
+
+/* ── FULL-SCREEN OVERLAY ── */
+.overlay{
+  position:fixed;inset:0;z-index:200;
+  background:var(--paper);
+  display:none;flex-direction:column;
+  animation:slide-up .28s ease-out;
+  overflow:hidden;
+}
+.overlay.open{display:flex}
+@keyframes slide-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.overlay-header{
+  background:linear-gradient(135deg,var(--indigo) 0%,var(--indigo2) 100%);
+  color:#fff;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;
+  flex-shrink:0;box-shadow:var(--sh2);
+}
+.overlay-back{
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  color:#fff;padding:7px 14px;border-radius:var(--radius-sm);
+  font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:5px;min-height:44px;flex-shrink:0;
+}
+.overlay-back:hover{background:rgba(255,255,255,.25)}
+.overlay-title{font-family:var(--font-head);font-size:18px;font-weight:600;flex:1;min-width:0}
+.overlay-title input{
+  font-family:var(--font-head);font-size:18px;font-weight:600;
+  background:transparent;border:none;border-bottom:1.5px solid rgba(255,255,255,.4);
+  color:#fff;outline:none;width:100%;
+}
+.overlay-title input::placeholder{color:rgba(255,255,255,.5)}
+.overlay-body{flex:1;overflow-y:auto;padding:18px 16px;max-width:800px;width:100%;margin:0 auto}
+
+/* Live session overlay specifics */
+.live-timer-bar{
+  background:linear-gradient(135deg,var(--crimson) 0%,#c73e3e 100%);
+  color:#fff;padding:14px 18px;border-radius:var(--radius);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;margin-bottom:14px;box-shadow:var(--sh2);
+}
+.live-timer-bar.idle{background:var(--paper2);color:var(--ink2);border:1.5px dashed var(--line2);box-shadow:none}
+.live-left{display:flex;align-items:center;gap:12px}
+.live-pulse{width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 0 rgba(255,255,255,.7);animation:live-pulse 1.5s infinite}
+.live-timer-bar.idle .live-pulse{background:var(--ink3);animation:none}
+@keyframes live-pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.7)}70%{box-shadow:0 0 0 10px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.live-timer{font-family:var(--font-head);font-size:26px;font-weight:700;direction:ltr;font-variant-numeric:tabular-nums;line-height:1}
+.live-label{font-size:11px;font-weight:600;opacity:.85;margin-top:3px}
+
+/* Attendance rows in overlay */
+.att-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:var(--paper);
+  border:1px solid var(--line);border-radius:var(--radius-sm);
+  margin-bottom:6px;transition:var(--transition);
+}
+.att-row.present{border-color:var(--olive);background:linear-gradient(to left,var(--olive-light) 0%,var(--paper) 100%)}
+.att-row.absent{border-color:var(--crimson);background:linear-gradient(to left,var(--crimson-light) 0%,var(--paper) 100%);opacity:.8}
+.att-name{flex:1;font-weight:600;font-size:13px}
+.att-btns{display:flex;gap:4px;background:var(--paper2);padding:3px;border-radius:var(--radius-sm);flex-shrink:0}
+.att-pick{
+  padding:6px 12px;border:none;background:transparent;
+  font-family:var(--font-body);font-size:12px;font-weight:700;
+  cursor:pointer;border-radius:6px;transition:var(--transition);color:var(--ink3);
+  min-height:36px;
+}
+.att-pick:hover{color:var(--ink)}
+.att-pick.on-p{background:var(--olive);color:#fff}
+.att-pick.on-a{background:var(--crimson);color:#fff}
+.att-sticky-bar{
+  position:sticky;bottom:0;padding:10px 16px;
+  background:rgba(250,247,242,.95);backdrop-filter:blur(8px);
+  border-top:1px solid var(--line);margin-top:10px;
+  display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;
+}
+
+/* Modal */
+.modal-wrap{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(26,24,22,.5);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;padding:0;
+  animation:overlay-in .2s ease-out;
+}
+.modal-wrap.open{display:flex}
+@media(min-width:600px){.modal-wrap{align-items:center;padding:16px}}
+.modal{
+  background:var(--paper);border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  padding:20px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;
+  box-shadow:var(--sh4);animation:modal-in .25s ease-out;
+}
+@media(min-width:600px){.modal{border-radius:var(--radius-lg)}}
+@keyframes modal-in{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.modal-title{font-family:var(--font-head);font-size:16px;font-weight:600}
+.info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;background:var(--paper2);border-radius:var(--radius-sm);margin-bottom:6px;
+}
+.info-lbl{font-size:11px;color:var(--ink3);font-weight:600}
+.info-val{font-size:13px;font-weight:700}
+.divider{height:1px;background:var(--line);margin:12px 0}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:var(--paper);
+  padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;
+  z-index:9999;white-space:nowrap;box-shadow:var(--sh3);
+  opacity:0;pointer-events:none;transition:all .25s ease-out;
+  max-width:calc(100vw - 32px);text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Stats bar */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:600px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:12px;position:relative;overflow:hidden}
+.stat::after{content:'';position:absolute;bottom:0;right:0;left:0;height:2px}
+.stat1::after{background:var(--indigo)}
+.stat2::after{background:var(--olive)}
+.stat3::after{background:var(--crimson)}
+.stat4::after{background:var(--gold)}
+.stat-num{font-family:var(--font-head);font-size:26px;font-weight:700;line-height:1}
+.stat-lbl{font-size:10px;color:var(--ink3);font-weight:600;margin-top:3px;letter-spacing:.3px}
+
+/* Responsive */
+@media(max-width:540px){
+  .app-header,.tab-bar,.panel{padding-right:12px;padding-left:12px}
+  .card-grid{grid-template-columns:1fr}
+  .session-card .session-btns{width:100%;justify-content:flex-end}
+  .overlay-header{padding:10px 12px}
+  .overlay-body{padding:14px 12px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo" id="logo-wrap" onclick="document.getElementById('logo-file').click()" style="cursor:pointer;overflow:hidden;padding:0" title="اضغط لتغيير الصورة">
+        <img id="logo-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:10px"/>
+        <span id="logo-letter">ف</span>
+        <input type="file" id="logo-file" accept="image/*" style="display:none" onchange="handleLogoUpload(event)"/>
+      </div>
+      <div>
+        <div class="app-title-wrap" onclick="editAppTitle()">
+          <div class="app-title" id="app-title">منصة الفصل</div>
+          <input type="text" class="app-title-input" id="app-title-input" style="display:none"
+            onblur="saveAppTitle()" onkeydown="if(event.key==='Enter')saveAppTitle();if(event.key==='Escape'){this.style.display='none';$('app-title').style.display='block'}"/>
+        </div>
+        <div class="app-subtitle">إدارة الدورات والطلاب والجلسات</div>
+      </div>
+    </div>
+    <div class="sync-badge" id="sync-badge"><span class="sync-dot"></span><span id="sync-lbl">محفوظ</span></div>
+  </div>
+</header>
+
+<!-- ═══ TABS ═══ -->
+<div class="tab-bar">
+  <button class="tab-btn active" id="tab-courses-btn" onclick="switchTab('courses')">
+    <span class="tab-label-wrap" ondblclick="editTabLabel('courses',event)">
+      <span id="tab-label-courses">الدورات</span>
+    </span>
+    <span class="tab-count" id="tc-courses">0</span>
+  </button>
+  <button class="tab-btn" id="tab-students-btn" onclick="switchTab('students')">
+    <span class="tab-label-wrap" ondblclick="editTabLabel('students',event)">
+      <span id="tab-label-students">الطلاب</span>
+    </span>
+    <span class="tab-count" id="tc-students">0</span>
+  </button>
+  <button class="tab-btn" id="tab-sessions-btn" onclick="switchTab('sessions')">
+    <span class="tab-label-wrap" ondblclick="editTabLabel('sessions',event)">
+      <span id="tab-label-sessions">الجلسات</span>
+    </span>
+    <span class="tab-count" id="tc-sessions">0</span>
+  </button>
+  <button class="tab-btn" id="tab-history-btn" onclick="switchTab('history')">
+    <span class="tab-label-wrap" ondblclick="editTabLabel('history',event)">
+      <span id="tab-label-history">السجل</span>
+    </span>
+    <span class="tab-count" id="tc-history">0</span>
+  </button>
+</div>
+
+<div style="max-width:1080px;margin:0 auto;padding:0 16px">
+  <div class="stat-grid" id="stat-grid" style="padding-top:14px">
+    <div class="stat stat1"><div class="stat-num" id="s-courses">0</div><div class="stat-lbl">دورة</div></div>
+    <div class="stat stat2"><div class="stat-num" id="s-students">0</div><div class="stat-lbl">طالب</div></div>
+    <div class="stat stat3"><div class="stat-num" id="s-sessions">0</div><div class="stat-lbl">جلسة</div></div>
+    <div class="stat stat4"><div class="stat-num" id="s-completed">0</div><div class="stat-lbl">جلسة مكتملة</div></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL 1: COURSES ═══ -->
+<div class="panel active" id="panel-courses">
+
+  <div class="section green">
+    <div class="section-hd">
+      <div class="section-title-wrap" onclick="editSectionTitle('add-course-title')">
+        <div class="section-title">
+          <div class="section-title-num" style="background:var(--olive-bg);color:var(--olive)">+</div>
+          <span id="add-course-title">إضافة دورة جديدة</span>
+          <span class="edit-title-hint">✏️</span>
+        </div>
+        <input class="section-title-input" id="add-course-title-input" style="display:none"
+          onblur="saveSectionTitle('add-course-title')" onkeydown="stKeydown(event,'add-course-title')"/>
+      </div>
+    </div>
+    <div class="section-form">
+      <div class="form-grid">
+        <div class="fg">
+          <label class="label">اسم الدورة</label>
+          <input class="input" id="c-name" placeholder="مثال: الرياضيات 101" onkeydown="if(event.key==='Enter')addCourse()"/>
+          <span class="err-msg" id="c-name-err">اسم الدورة مطلوب</span>
+        </div>
+        <div class="fg">
+          <label class="label">رابط Zoom</label>
+          <input class="input ltr" id="c-zoom" placeholder="https://zoom.us/j/..." onkeydown="if(event.key==='Enter')addCourse()"/>
+          <span class="err-msg" id="c-zoom-err">رابط Zoom مطلوب</span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-olive" onclick="addCourse()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          إضافة الدورة
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-hd">
+      <div class="section-title-wrap" onclick="editSectionTitle('avail-courses-title')">
+        <div class="section-title">
+          <div class="section-title-num">١</div>
+          <span id="avail-courses-title">الدورات المتاحة</span>
+          <span class="edit-title-hint">✏️</span>
+        </div>
+        <input class="section-title-input" id="avail-courses-title-input" style="display:none"
+          onblur="saveSectionTitle('avail-courses-title')" onkeydown="stKeydown(event,'avail-courses-title')"/>
+      </div>
+      <div style="font-size:11px;color:var(--ink3)">انقر على الدورة لفتح التفاصيل</div>
+    </div>
+    <div class="card-grid" id="courses-grid"></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL 2: STUDENTS ═══ -->
+<div class="panel" id="panel-students">
+
+  <div class="section green">
+    <div class="section-hd">
+      <div class="section-title-wrap" onclick="editSectionTitle('add-stu-title')">
+        <div class="section-title">
+          <div class="section-title-num" style="background:var(--olive-bg);color:var(--olive)">+</div>
+          <span id="add-stu-title">إضافة طالب جديد</span>
+          <span class="edit-title-hint">✏️</span>
+        </div>
+        <input class="section-title-input" id="add-stu-title-input" style="display:none"
+          onblur="saveSectionTitle('add-stu-title')" onkeydown="stKeydown(event,'add-stu-title')"/>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="fg">
+        <label class="label">اسم الطالب</label>
+        <input class="input" id="s-name" placeholder="الاسم الكامل"/>
+        <span class="err-msg" id="s-name-err">اسم الطالب مطلوب</span>
+      </div>
+      <div class="fg">
+        <label class="label">تاريخ الميلاد</label>
+        <input class="input" type="date" id="s-dob" oninput="calcAge()"/>
+        <span class="err-msg" id="s-dob-err">تاريخ الميلاد مطلوب</span>
+      </div>
+      <div class="fg">
+        <label class="label">العمر</label>
+        <div class="age-badge empty" id="age-display">— سنة</div>
+      </div>
+      <div class="fg">
+        <label class="label">الدورة</label>
+        <select class="select" id="s-course">
+          <option value="">اختر الدورة</option>
+        </select>
+        <span class="err-msg" id="s-course-err">يجب اختيار الدورة</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-olive" onclick="addStudent()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        إضافة الطالب
+      </button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-hd">
+      <div class="section-title-wrap" onclick="editSectionTitle('stu-list-title')">
+        <div class="section-title">
+          <div class="section-title-num">٢</div>
+          <span id="stu-list-title">قائمة الطلاب</span>
+          <span class="edit-title-hint">✏️</span>
+        </div>
+        <input class="section-title-input" id="stu-list-title-input" style="display:none"
+          onblur="saveSectionTitle('stu-list-title')" onkeydown="stKeydown(event,'stu-list-title')"/>
+      </div>
+      <button class="btn btn-ghost" id="codes-toggle-btn" onclick="toggleCodes()" style="padding:8px 12px;font-size:12px">
+        👁 إظهار الرموز
+      </button>
+    </div>
+    <div class="filter-pills" id="stu-filter-pills"></div>
+    <div id="students-list"></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL 3: SESSIONS ═══ -->
+<div class="panel" id="panel-sessions">
+
+  <div class="section green">
+    <div class="section-hd">
+      <div class="section-title-wrap" onclick="editSectionTitle('add-ses-title')">
+        <div class="section-title">
+          <div class="section-title-num" style="background:var(--olive-bg);color:var(--olive)">+</div>
+          <span id="add-ses-title">إضافة جلسة</span>
+          <span class="edit-title-hint">✏️</span>
+        </div>
+        <input class="section-title-input" id="add-ses-title-input" style="display:none"
+          onblur="saveSectionTitle('add-ses-title')" onkeydown="stKeydown(event,'add-ses-title')"/>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="fg">
+        <label class="label">الدورة</label>
+        <select class="select" id="ses-course" onchange="onSesCourseChange()">
+          <option value="">اختر الدورة</option>
+        </select>
+        <span class="err-msg" id="ses-course-err">يجب اختيار الدورة</span>
+      </div>
+      <div class="fg">
+        <label class="label">تاريخ الجلسة</label>
+        <input class="input" type="date" id="ses-date"/>
+        <span class="err-msg" id="ses-date-err">التاريخ مطلوب</span>
+      </div>
+      <div class="fg">
+        <label class="label">الوقت</label>
+        <div class="time-row">
+          <input class="input" type="time" id="ses-from" placeholder="من"/>
+          <span class="time-sep">←</span>
+          <input class="input" type="time" id="ses-to" placeholder="إلى"/>
+        </div>
+        <span class="err-msg" id="ses-time-err">وقت البداية والنهاية مطلوبان</span>
+      </div>
+      <div class="fg">
+        <label class="label">رابط Zoom للجلسة</label>
+        <input class="input ltr" id="ses-zoom" placeholder="https://zoom.us/j/..."/>
+        <span class="err-msg" id="ses-zoom-err">رابط Zoom مطلوب</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-olive" onclick="addSession()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        إضافة الجلسة
+      </button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-hd">
+      <div class="section-title-wrap" onclick="editSectionTitle('sched-title')">
+        <div class="section-title">
+          <div class="section-title-num">٢</div>
+          <span id="sched-title">الجلسات المجدولة</span>
+          <span class="edit-title-hint">✏️</span>
+        </div>
+        <input class="section-title-input" id="sched-title-input" style="display:none"
+          onblur="saveSectionTitle('sched-title')" onkeydown="stKeydown(event,'sched-title')"/>
+      </div>
+    </div>
+    <div id="sessions-list"></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL 4: HISTORY ═══ -->
+<div class="panel" id="panel-history">
+  <div class="section">
+    <div class="section-hd">
+      <div class="section-title-wrap" onclick="editSectionTitle('hist-title')">
+        <div class="section-title">
+          <div class="section-title-num">٤</div>
+          <span id="hist-title">السجل</span>
+          <span class="edit-title-hint">✏️</span>
+        </div>
+        <input class="section-title-input" id="hist-title-input" style="display:none"
+          onblur="saveSectionTitle('hist-title')" onkeydown="stKeydown(event,'hist-title')"/>
+      </div>
+      <button class="btn btn-ghost" onclick="loadHistory()" style="padding:7px 12px;font-size:12px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7M21 3v6h-6"/></svg>
+        تحديث
+      </button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<!-- ═══ COURSE DETAIL OVERLAY ═══ -->
+<div class="overlay" id="ov-course">
+  <div class="overlay-header">
+    <button class="overlay-back" onclick="closeOverlay('ov-course')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      رجوع
+    </button>
+    <div class="overlay-title">
+      <input type="text" id="ov-course-name-input" placeholder="اسم الدورة" onblur="saveCourseName()" onkeydown="if(event.key==='Enter')this.blur()"/>
+    </div>
+  </div>
+  <div class="overlay-body">
+    <div class="section" style="margin-bottom:12px">
+      <div class="section-title" style="margin-bottom:12px;font-size:14px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        رابط Zoom
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px;padding:10px 12px;background:var(--paper2);border:1px solid var(--line);border-radius:var(--radius-sm);font-size:12px;direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="ov-zoom-display">—</div>
+        <a class="btn btn-primary" id="ov-zoom-btn" href="#" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          فتح Zoom
+        </a>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title" style="margin-bottom:12px;font-size:14px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        الطلاب المسجلون (<span id="ov-stu-count">0</span>)
+      </div>
+      <div id="ov-students-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SESSION DETAIL OVERLAY (from sessions tab) ═══ -->
+<div class="overlay" id="ov-session">
+  <div class="overlay-header">
+    <button class="overlay-back" onclick="closeOverlay('ov-session')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      رجوع
+    </button>
+    <div class="overlay-title"><span id="ov-ses-title">تفاصيل الجلسة</span></div>
+  </div>
+  <div class="overlay-body">
+    <div class="section" style="margin-bottom:12px" id="ov-ses-details"></div>
+  </div>
+</div>
+
+<!-- ═══ LIVE ATTENDANCE OVERLAY ═══ -->
+<div class="overlay" id="ov-attendance">
+  <div class="overlay-header">
+    <button class="overlay-back" onclick="confirmEndSession()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+      إنهاء الجلسة
+    </button>
+    <div class="overlay-title"><span id="att-overlay-title">الحضور</span></div>
+  </div>
+  <div class="overlay-body" id="att-overlay-body">
+    <div class="live-timer-bar" id="live-bar">
+      <div class="live-left">
+        <div class="live-pulse"></div>
+        <div>
+          <div class="live-label" id="live-status">🔴 جلسة مباشرة</div>
+          <div class="live-timer" id="live-timer">00:00:00</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="markAllAtt('present')" style="font-size:12px;padding:7px 12px">✓ الكل حاضر</button>
+      <button class="btn btn-ghost" onclick="markAllAtt('absent')" style="font-size:12px;padding:7px 12px">✗ الكل غائب</button>
+    </div>
+    <div id="att-students-list"></div>
+    <div class="att-sticky-bar">
+      <button class="btn btn-crimson" onclick="confirmEndSession()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+        نهاية الجلسة
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ END SESSION MODAL ═══ -->
+<div class="modal-wrap" id="mod-end">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hd">
+      <div class="modal-title">⏹ إنهاء الجلسة وحفظ النتائج</div>
+      <button class="btn-icon" onclick="closeModal('mod-end')">✕</button>
+    </div>
+    <div id="end-summary"></div>
+    <div class="divider"></div>
+    <div class="fg" style="margin-bottom:14px">
+      <label class="label">رابط التسجيل (اختياري)</label>
+      <input class="input ltr" id="rec-link" placeholder="https://zoom.us/rec/share/..."/>
+      <span style="font-size:11px;color:var(--ink3);margin-top:3px">إن سجّلت الجلسة على Zoom Cloud، الصق رابط التسجيل هنا</span>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeModal('mod-end')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveSession()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        إنهاء وحفظ
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN CODE MODAL ═══ -->
+<div class="modal-wrap" id="mod-admin" onclick="closeModal('mod-admin')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:360px;text-align:center">
+    <div class="modal-hd">
+      <div class="modal-title">🔐 رمز الأدمن</div>
+      <button class="btn-icon" onclick="closeModal('mod-admin')">✕</button>
+    </div>
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:14px">أدخل رمز المدرس أو مساعد المدرس لعرض رموز الطلاب</div>
+    <input class="input" type="password" id="admin-code-inp" placeholder="الرمز"
+      style="text-align:center;letter-spacing:6px;font-size:18px;font-weight:700;margin-bottom:6px;max-width:200px;display:block;margin:0 auto 12px"
+      onkeydown="if(event.key==='Enter')verifyAdmin()"/>
+    <div style="font-size:11px;color:var(--ink4);margin-bottom:14px">المدرس: <b>01</b> · المساعد: <b>02</b></div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="btn btn-ghost" onclick="closeModal('mod-admin')">إلغاء</button>
+      <button class="btn btn-primary" onclick="verifyAdmin()">دخول</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMPLETED SESSION DETAIL MODAL ═══ -->
+<div class="modal-wrap" id="mod-history" onclick="closeModal('mod-history')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:560px">
+    <div class="modal-hd">
+      <div class="modal-title" id="hist-modal-title">تفاصيل الجلسة</div>
+      <button class="btn-icon" onclick="closeModal('mod-history')">✕</button>
+    </div>
+    <div id="hist-modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══ FIREBASE ═══ -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+// ══════════════════════════════════════════════
+// FIREBASE INIT
+// ══════════════════════════════════════════════
+firebase.initializeApp({
+  apiKey:"AIzaSyDkZLmsf1jnWd9EiXqlXiFYIVDVLl7sbtY",
+  authDomain:"tareeqa-belkaidia-egypt.firebaseapp.com",
+  projectId:"tareeqa-belkaidia-egypt",
+  storageBucket:"tareeqa-belkaidia-egypt.firebasestorage.app",
+  appId:"1:669613446842:web:31c463a6792da56afdd483"
+});
+const db = firebase.firestore();
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let courses   = [];  // [{id,name,zoomLink}]
+let students  = [];  // [{id,name,dob,age,courseId,code}]
+let sessions  = [];  // [{id,courseId,courseName,date,startTime,endTime,zoomLink,status,...}]
+let studentCodes = {}; // {name: code}
+let titles = {};
+let codesRevealed = false;
+let adminVerified = false;
+let stuFilter = 'all';
+// Live session
+let liveSessionId = null;
+let liveStartTime = null;
+let liveTimerInterval = null;
+let liveAttendance = {};  // {studentId: 'present'|'absent'}
+let openCourseId = null;  // for course detail overlay
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const esc = s => String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const initials = n => {const p=(n||'').trim().split(/\s+/);return p.length>=2?p[0][0]+p[1][0]:(n||'').slice(0,2)};
+const avClass = n => {let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;return'av'+((h%8)+1)};
+const pad = n => String(n).padStart(2,'0');
+const calcAgeFromDob = dob => {
+  if(!dob) return null;
+  const b=new Date(dob), now=new Date();
+  let age=now.getFullYear()-b.getFullYear();
+  if(now<new Date(now.getFullYear(),b.getMonth(),b.getDate())) age--;
+  return age>=0?age:null;
+};
+const fmtDate = d => {
+  if(!d) return '—';
+  return new Date(d).toLocaleDateString('ar-EG',{day:'numeric',month:'long',year:'numeric'});
+};
+const fmtDuration = secs => {
+  const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;
+  return h>0?`${h}س ${m}د`:`${m} دقيقة ${s>0?s+'ث':''}`.trim();
+};
+
+let _toastTimer;
+function toast(msg,dur=2800){
+  const t=$('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>t.classList.remove('show'),dur);
+}
+function sync(state){
+  const b=$('sync-badge'),l=$('sync-lbl'),d=b.querySelector('.sync-dot');
+  if(state==='saving'){b.classList.add('saving');l.textContent='حفظ...';}
+  else{b.classList.remove('saving');l.textContent='محفوظ';}
+}
+function genCode(){
+  const used=new Set(Object.values(studentCodes).map(String));
+  let n=100; while(used.has(String(n)))n++; return String(n);
+}
+function openOverlay(id){$(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeOverlay(id){
+  $(id).classList.remove('open');
+  if(!document.querySelector('.overlay.open'))document.body.style.overflow='';
+}
+function openModal(id){$(id).classList.add('open');}
+function closeModal(id){$(id).classList.remove('open');}
+
+// ══════════════════════════════════════════════
+// FIRESTORE: LIVE CONFIG LISTENER
+// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// LOGO UPLOAD
+// ══════════════════════════════════════════════
+function handleLogoUpload(event){
+  const file=event.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){toast('⚠️ اختر ملف صورة');return;}
+  if(file.size>2*1024*1024){toast('⚠️ الصورة أكبر من 2MB');return;}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const result=e.target.result;
+    $('logo-img').src=result;
+    $('logo-img').style.display='block';
+    $('logo-letter').style.display='none';
+    db.collection('config').doc('app').set({logoImage:result},{merge:true})
+      .then(()=>toast('✓ تم تحديث الصورة'))
+      .catch(err=>toast('⚠️ '+err.message));
+  };
+  reader.readAsDataURL(file);
+  // Reset input so same file can be re-uploaded
+  event.target.value='';
+}
+
+function removeLogoImage(){
+  $('logo-img').src='';
+  $('logo-img').style.display='none';
+  $('logo-letter').style.display='';
+  db.collection('config').doc('app').set({logoImage:''},{merge:true})
+    .then(()=>toast('✓ تم حذف الصورة'))
+    .catch(err=>toast('⚠️ '+err.message));
+}
+
+function initFirestore(){
+  db.collection('config').doc('app').onSnapshot(doc=>{
+    if(!doc.exists){
+      db.collection('config').doc('app').set({courses:[],students:[],studentCodes:{},titles:{},sessions:[]}).catch(()=>{});
+      return;
+    }
+    const d=doc.data();
+    courses  = (d.courses  ||[]).map(c=>typeof c==='string'?{id:uid(),name:c,zoomLink:''}:c);
+    students = d.students  ||[];
+    studentCodes = d.studentCodes||{};
+    titles   = d.titles   ||{};
+    applyTitles();
+    renderAll();
+    // Restore logo image if saved
+    if(d.logoImage){
+      $('logo-img').src=d.logoImage;
+      $('logo-img').style.display='block';
+      $('logo-letter').style.display='none';
+    } else {
+      $('logo-img').style.display='none';
+      $('logo-letter').style.display='';
+    }
+  });
+  // Sessions from separate collection
+  db.collection('sessions2').orderBy('createdAt','desc').onSnapshot(snap=>{
+    sessions=[];
+    snap.forEach(doc=>sessions.push({id:doc.id,...doc.data()}));
+    renderSessions();
+    renderHistory();
+    updateCounts();
+  });
+}
+
+async function saveConfig(partial){
+  sync('saving');
+  try{
+    await db.collection('config').doc('app').set(partial,{merge:true});
+    sync('saved');
+  }catch(e){sync('saved');toast('⚠️ خطأ في الحفظ: '+e.message);}
+}
+
+// ══════════════════════════════════════════════
+// TITLES — Inline Editable
+// ══════════════════════════════════════════════
+const titleKeys = [
+  'add-course-title','avail-courses-title','add-stu-title','stu-list-title',
+  'add-ses-title','sched-title','hist-title'
+];
+function applyTitles(){
+  if(!titles) return;
+  titleKeys.forEach(k=>{const el=$(k);if(el&&titles[k])el.textContent=titles[k];});
+  if(titles.appTitle){$('app-title').textContent=titles.appTitle;}
+  ['courses','students','sessions','history'].forEach(t=>{
+    const el=$('tab-label-'+t);if(el&&titles['tab-'+t])el.textContent=titles['tab-'+t];
+  });
+}
+function editSectionTitle(key){
+  const span=$(key), inp=$(key+'-input');
+  if(!span||!inp) return;
+  inp.value=span.textContent.trim();
+  span.style.display='none'; inp.style.display='';
+  inp.focus();inp.select();
+}
+function saveSectionTitle(key){
+  const span=$(key), inp=$(key+'-input');
+  if(!span||!inp) return;
+  const v=inp.value.trim()||span.textContent||key;
+  span.textContent=v; span.style.display=''; inp.style.display='none';
+  titles[key]=v;
+  saveConfig({titles});
+}
+function stKeydown(e,key){
+  if(e.key==='Enter')saveSectionTitle(key);
+  if(e.key==='Escape'){const inp=$(key+'-input');inp.style.display='none';$(key).style.display='';}
+}
+function editTabLabel(tab,e){
+  e.stopPropagation();
+  const span=$('tab-label-'+tab);
+  const inp=document.createElement('input');
+  inp.className='tab-label-input';inp.value=span.textContent.trim();
+  span.parentNode.replaceChild(inp,span);
+  inp.focus();inp.select();
+  inp.onblur=()=>{
+    const v=inp.value.trim()||span.textContent;
+    span.textContent=v;
+    inp.parentNode.replaceChild(span,inp);
+    titles['tab-'+tab]=v; saveConfig({titles});
+  };
+  inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')inp.blur();};
+}
+function editAppTitle(){
+  $('app-title').style.display='none';
+  $('app-title-input').style.display='block';
+  $('app-title-input').value=$('app-title').textContent.trim();
+  $('app-title-input').focus();$('app-title-input').select();
+}
+function saveAppTitle(){
+  const v=$('app-title-input').value.trim()||$('app-title').textContent;
+  $('app-title').textContent=v;$('app-title').style.display='block';
+  $('app-title-input').style.display='none';
+  document.title=v; titles.appTitle=v; saveConfig({titles});
+}
+
+// ══════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════
+let activeTab='courses';
+function switchTab(tab){
+  if(activeTab===tab) return;
+  activeTab=tab;
+  ['courses','students','sessions','history'].forEach(t=>{
+    $('panel-'+t).classList.toggle('active',t===tab);
+    $('tab-'+t+'-btn').classList.toggle('active',t===tab);
+  });
+  if(tab==='history') loadHistory();
+}
+
+// ══════════════════════════════════════════════
+// RENDER ALL
+// ══════════════════════════════════════════════
+function renderAll(){
+  renderCourses();
+  renderStudents();
+  renderSessions();
+  populateCourseDropdowns();
+  updateCounts();
+}
+function updateCounts(){
+  $('tc-courses').textContent = courses.length;
+  $('tc-students').textContent = students.length;
+  $('tc-sessions').textContent = sessions.filter(s=>s.status==='scheduled'||s.status==='active').length;
+  $('tc-history').textContent = sessions.filter(s=>s.status==='completed').length;
+  $('s-courses').textContent = courses.length;
+  $('s-students').textContent = students.length;
+  $('s-sessions').textContent = sessions.filter(s=>s.status!=='completed').length;
+  $('s-completed').textContent = sessions.filter(s=>s.status==='completed').length;
+}
+function populateCourseDropdowns(){
+  ['s-course','ses-course'].forEach(id=>{
+    const sel=$(id); if(!sel) return;
+    const prev=sel.value;
+    sel.innerHTML='<option value="">اختر الدورة</option>';
+    courses.forEach(c=>{
+      const o=document.createElement('option');
+      o.value=c.id; o.textContent=c.name;
+      if(c.id===prev) o.selected=true;
+      sel.appendChild(o);
+    });
+  });
+}
+
+// ══════════════════════════════════════════════
+// SECTION 1: COURSES
+// ══════════════════════════════════════════════
+function addCourse(){
+  const name=$('c-name').value.trim();
+  const zoom=$('c-zoom').value.trim();
+  let ok=true;
+  $('c-name-err').classList.toggle('show',!name); if(!name) ok=false;
+  $('c-zoom-err').classList.toggle('show',!zoom); if(!zoom) ok=false;
+  if(!ok) return;
+  const c={id:uid(),name,zoomLink:zoom};
+  courses.push(c);
+  $('c-name').value=''; $('c-zoom').value='';
+  $('c-name-err').classList.remove('show'); $('c-zoom-err').classList.remove('show');
+  renderCourses();
+  populateCourseDropdowns();
+  updateCounts();
+  saveConfig({courses});
+  toast('✓ تمت إضافة الدورة: '+name);
+  $('c-name').focus();
+}
+
+function renderCourses(){
+  const g=$('courses-grid');
+  if(!courses.length){
+    g.innerHTML='<div class="empty"><div class="empty-icon">📚</div><strong>لا توجد دورات بعد</strong>استخدم النموذج الأخضر لإضافة دورتك الأولى</div>';
+    return;
+  }
+  g.innerHTML='';
+  courses.forEach((c,i)=>{
+    const stuCount=students.filter(s=>s.courseId===c.id).length;
+    const card=document.createElement('div');
+    card.className='course-card';
+    card.innerHTML=`
+      <div class="card-actions">
+        <button class="btn-icon edit" onclick="event.stopPropagation();inlineEditCourse('${c.id}')" title="تعديل">✏️</button>
+        <button class="btn-icon del" onclick="event.stopPropagation();deleteCourse('${c.id}')" title="حذف">🗑️</button>
+      </div>
+      <div class="card-name" id="cname-${c.id}">${esc(c.name)}</div>
+      <div class="card-zoom ltr">${esc(c.zoomLink)}</div>
+      <div class="card-meta">
+        <span>👥 ${stuCount} طالب</span>
+        <span style="color:var(--olive)">✓ Zoom</span>
+      </div>
+      <div class="card-arrow">←</div>`;
+    card.onclick=()=>openCourseDetail(c.id);
+    g.appendChild(card);
+  });
+}
+
+function inlineEditCourse(id){
+  const c=courses.find(x=>x.id===id); if(!c) return;
+  const card=document.querySelector(`.course-card .card-name[id="cname-${id}"]`)?.closest('.course-card');
+  if(!card) return;
+  card.onclick=null;
+  card.innerHTML=`
+    <div class="row-edit-form" style="margin:0">
+      <div class="row-edit-grid">
+        <div class="fg"><label class="label">الاسم</label><input class="input" id="edit-c-name-${id}" value="${esc(c.name)}"/></div>
+        <div class="fg"><label class="label">رابط Zoom</label><input class="input ltr" id="edit-c-zoom-${id}" value="${esc(c.zoomLink)}"/></div>
+      </div>
+      <div class="row-edit-actions">
+        <button class="btn btn-ghost" onclick="renderCourses()">إلغاء</button>
+        <button class="btn btn-primary" onclick="saveCourseEdit('${id}')">حفظ</button>
+      </div>
+    </div>`;
+}
+async function saveCourseEdit(id){
+  const name=$('edit-c-name-'+id)?.value.trim();
+  const zoom=$('edit-c-zoom-'+id)?.value.trim();
+  if(!name||!zoom){toast('⚠️ الحقول مطلوبة');return;}
+  const c=courses.find(x=>x.id===id); if(!c) return;
+  c.name=name; c.zoomLink=zoom;
+  renderCourses(); populateCourseDropdowns();
+  await saveConfig({courses}); toast('✓ تم التحديث');
+}
+async function deleteCourse(id){
+  if(!confirm('حذف هذه الدورة؟ سيتم إزالة جميع الطلاب المرتبطين بها.')) return;
+  courses=courses.filter(c=>c.id!==id);
+  renderCourses(); populateCourseDropdowns(); updateCounts();
+  await saveConfig({courses}); toast('تم الحذف');
+}
+
+// Course Detail Overlay
+function openCourseDetail(id){
+  const c=courses.find(x=>x.id===id); if(!c) return;
+  openCourseId=id;
+  $('ov-course-name-input').value=c.name;
+  $('ov-zoom-display').textContent=c.zoomLink||'—';
+  const btn=$('ov-zoom-btn');
+  if(c.zoomLink){btn.href=c.zoomLink;btn.style.opacity='1';btn.style.pointerEvents='';}
+  else{btn.href='#';btn.style.opacity='.4';btn.style.pointerEvents='none';}
+  const stus=students.filter(s=>s.courseId===id);
+  $('ov-stu-count').textContent=stus.length;
+  const list=$('ov-students-list');
+  if(!stus.length){list.innerHTML='<div class="empty"><strong>لا يوجد طلاب مسجلون</strong>أضف طلاباً من تبويب الطلاب</div>';openOverlay('ov-course');return;}
+  list.innerHTML=stus.map(s=>`
+    <div class="student-row">
+      <div class="avatar ${avClass(s.name)}">${esc(initials(s.name))}</div>
+      <div class="stu-info">
+        <div class="stu-name">${esc(s.name)}</div>
+        <div class="stu-meta"><span class="pill pill-age">${s.age||'—'} سنة</span></div>
+      </div>
+    </div>`).join('');
+  openOverlay('ov-course');
+}
+async function saveCourseName(){
+  if(!openCourseId) return;
+  const name=$('ov-course-name-input').value.trim();
+  if(!name) return;
+  const c=courses.find(x=>x.id===openCourseId); if(!c) return;
+  c.name=name; renderCourses(); populateCourseDropdowns();
+  await saveConfig({courses}); toast('✓ تم تحديث الاسم');
+}
+
+// ══════════════════════════════════════════════
+// SECTION 2: STUDENTS
+// ══════════════════════════════════════════════
+function calcAge(){
+  const dob=$('s-dob').value;
+  const age=calcAgeFromDob(dob);
+  const el=$('age-display');
+  if(age===null){el.textContent='— سنة';el.className='age-badge empty';}
+  else{
+    // Convert to Arabic-indic numerals
+    const ar=age.toString().replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+    el.textContent=ar+' سنة';el.className='age-badge';
+  }
+}
+function addStudent(){
+  const name=$('s-name').value.trim();
+  const dob=$('s-dob').value;
+  const courseId=$('s-course').value;
+  let ok=true;
+  $('s-name-err').classList.toggle('show',!name); if(!name) ok=false;
+  $('s-dob-err').classList.toggle('show',!dob); if(!dob) ok=false;
+  $('s-course-err').classList.toggle('show',!courseId); if(!courseId) ok=false;
+  if(!ok) return;
+  const age=calcAgeFromDob(dob);
+  const code=studentCodes[name]||(()=>{const c=genCode();studentCodes[name]=c;return c;})();
+  const s={id:uid(),name,dob,age:age||0,courseId,code};
+  students.push(s);
+  $('s-name').value='';$('s-dob').value='';$('s-course').value='';
+  $('age-display').textContent='— سنة';$('age-display').className='age-badge empty';
+  ['s-name-err','s-dob-err','s-course-err'].forEach(e=>$(e).classList.remove('show'));
+  renderStudents(); updateCounts();
+  saveConfig({students,studentCodes}); toast('✓ تمت إضافة الطالب: '+name);
+  $('s-name').focus();
+}
+
+function renderStudents(){
+  const list=$('students-list');
+  // Filter pills
+  const pills=$('stu-filter-pills');
+  const allPill=`<button class="fpill${stuFilter==='all'?' active':''}" onclick="setStudentFilter('all')">الكل (${students.length})</button>`;
+  const coursePills=courses.map(c=>{
+    const cnt=students.filter(s=>s.courseId===c.id).length;
+    return `<button class="fpill${stuFilter===c.id?' active':''}" onclick="setStudentFilter('${c.id}')">${esc(c.name)} (${cnt})</button>`;
+  }).join('');
+  pills.innerHTML=allPill+coursePills;
+  const filtered=stuFilter==='all'?students:students.filter(s=>s.courseId===stuFilter);
+  if(!filtered.length){
+    list.innerHTML='<div class="empty"><div class="empty-icon">👥</div><strong>لا يوجد طلاب</strong>استخدم النموذج الأخضر لإضافة طلاب</div>';
+    return;
+  }
+  list.innerHTML=filtered.map(s=>{
+    const c=courses.find(x=>x.id===s.courseId);
+    const code=codesRevealed?(studentCodes[s.name]||s.code||'?'):'••••';
+    const codeCls=codesRevealed?'pill-code':'pill-code hidden';
+    return `<div class="student-row">
+      <div class="avatar ${avClass(s.name)}">${esc(initials(s.name))}</div>
+      <div class="stu-info">
+        <div class="stu-name">${esc(s.name)}</div>
+        <div class="stu-meta">
+          <span class="pill pill-age">${s.age||'—'} سنة</span>
+          ${c?`<span class="pill pill-course">${esc(c.name)}</span>`:''}
+          <span class="pill ${codeCls}">${esc(code)}</span>
+        </div>
+      </div>
+      <div class="stu-actions">
+        <button class="btn-icon edit" onclick="inlineEditStudent('${s.id}')" title="تعديل">✏️</button>
+        <button class="btn-icon del" onclick="deleteStudent('${s.id}')" title="حذف">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function setStudentFilter(f){stuFilter=f;renderStudents();}
+
+function inlineEditStudent(id){
+  const s=students.find(x=>x.id===id); if(!s) return;
+  const row=document.querySelector(`.student-row .btn-icon[onclick*="${id}"]`)?.closest('.student-row');
+  if(!row) return;
+  const courseOpts=courses.map(c=>`<option value="${c.id}"${c.id===s.courseId?' selected':''}>${esc(c.name)}</option>`).join('');
+  row.outerHTML=`
+    <div class="row-edit-form" id="edit-stu-${id}">
+      <div class="row-edit-grid">
+        <div class="fg"><label class="label">الاسم</label><input class="input" id="esn-${id}" value="${esc(s.name)}"/></div>
+        <div class="fg"><label class="label">تاريخ الميلاد</label><input class="input" type="date" id="esd-${id}" value="${s.dob||''}"/></div>
+        <div class="fg"><label class="label">الدورة</label>
+          <select class="select" id="esc-${id}"><option value="">اختر</option>${courseOpts}</select>
+        </div>
+      </div>
+      <div class="row-edit-actions">
+        <button class="btn btn-ghost" onclick="renderStudents()">إلغاء</button>
+        <button class="btn btn-primary" onclick="saveStudentEdit('${id}')">حفظ</button>
+      </div>
+    </div>`;
+}
+async function saveStudentEdit(id){
+  const name=$('esn-'+id)?.value.trim();
+  const dob=$('esd-'+id)?.value;
+  const courseId=$('esc-'+id)?.value;
+  if(!name){toast('⚠️ الاسم مطلوب');return;}
+  const s=students.find(x=>x.id===id); if(!s) return;
+  const oldName=s.name;
+  s.name=name; s.dob=dob; s.age=calcAgeFromDob(dob)||0; s.courseId=courseId;
+  if(oldName!==name&&studentCodes[oldName]){
+    studentCodes[name]=studentCodes[oldName]; delete studentCodes[oldName]; s.code=studentCodes[name];
+  }
+  renderStudents();
+  await saveConfig({students,studentCodes}); toast('✓ تم التحديث');
+}
+async function deleteStudent(id){
+  if(!confirm('حذف هذا الطالب؟')) return;
+  students=students.filter(s=>s.id!==id);
+  renderStudents(); updateCounts();
+  await saveConfig({students}); toast('تم الحذف');
+}
+
+// Codes reveal
+function toggleCodes(){
+  if(codesRevealed){
+    codesRevealed=false; adminVerified=false;
+    $('codes-toggle-btn').textContent='👁 إظهار الرموز';
+    renderStudents(); return;
+  }
+  $('admin-code-inp').value='';
+  openModal('mod-admin');
+  setTimeout(()=>$('admin-code-inp').focus(),80);
+}
+function verifyAdmin(){
+  const code=$('admin-code-inp').value.trim();
+  if(code!=='01'&&code!=='02'){toast('❌ رمز غير صحيح');return;}
+  adminVerified=true; codesRevealed=true;
+  $('codes-toggle-btn').textContent='🙈 إخفاء الرموز';
+  closeModal('mod-admin'); renderStudents(); toast('🔓 تم عرض الرموز');
+}
+
+// ══════════════════════════════════════════════
+// SECTION 3: SESSIONS
+// ══════════════════════════════════════════════
+function onSesCourseChange(){
+  const id=$('ses-course').value;
+  const c=courses.find(x=>x.id===id);
+  if(c) $('ses-zoom').value=c.zoomLink||'';
+}
+async function addSession(){
+  const courseId=$('ses-course').value;
+  const date=$('ses-date').value;
+  const from=$('ses-from').value;
+  const to=$('ses-to').value;
+  const zoom=$('ses-zoom').value.trim();
+  let ok=true;
+  $('ses-course-err').classList.toggle('show',!courseId); if(!courseId) ok=false;
+  $('ses-date-err').classList.toggle('show',!date); if(!date) ok=false;
+  $('ses-time-err').classList.toggle('show',!from||!to); if(!from||!to) ok=false;
+  $('ses-zoom-err').classList.toggle('show',!zoom); if(!zoom) ok=false;
+  if(!ok) return;
+  const c=courses.find(x=>x.id===courseId);
+  const ses={
+    id:uid(),courseId,courseName:c?c.name:'',
+    date,startTime:from,endTime:to,zoomLink:zoom,
+    status:'scheduled',createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  // Optimistic
+  sessions.unshift(ses);
+  renderSessions(); updateCounts();
+  $('ses-course').value=''; $('ses-date').value=''; $('ses-from').value=''; $('ses-to').value=''; $('ses-zoom').value='';
+  ['ses-course-err','ses-date-err','ses-time-err','ses-zoom-err'].forEach(e=>$(e).classList.remove('show'));
+  try{
+    sync('saving');
+    const ref=await db.collection('sessions2').add({...ses,id:undefined});
+    // update local id
+    ses.id=ref.id; const idx=sessions.findIndex(s=>s===ses); if(idx>=0) sessions[idx].id=ref.id;
+    sync('saved');
+    toast('✓ تمت إضافة الجلسة');
+  }catch(e){sync('saved');toast('⚠️ '+e.message);}
+}
+
+function renderSessions(){
+  const list=$('sessions-list');
+  const sched=sessions.filter(s=>s.status==='scheduled');
+  if(!sched.length){
+    list.innerHTML='<div class="empty"><div class="empty-icon">📅</div><strong>لا توجد جلسات مجدولة</strong>أضف جلسة باستخدام النموذج الأخضر</div>';
+    return;
+  }
+  list.innerHTML=sched.map(s=>sessionCardHTML(s,true)).join('');
+}
+
+function sessionCardHTML(s, editBtns=false){
+  const c=courses.find(x=>x.id===s.courseId);
+  const dateStr=fmtDate(s.date);
+  return `<div class="session-card${editBtns?' clickable':''}" ${editBtns?`onclick="openSessionDetail('${s.id}')"`:''}>
+    <div class="session-top">
+      <div class="session-info">
+        <div class="session-course">${esc(s.courseName||c?.name||'—')}</div>
+        <div class="session-time">${esc(dateStr)} · ${esc(s.startTime||'')} ← ${esc(s.endTime||'')}</div>
+      </div>
+      ${editBtns?`<div class="session-btns">
+        <button class="btn-icon edit" onclick="event.stopPropagation();inlineEditSession('${s.id}')" title="تعديل">✏️</button>
+        <button class="btn-icon del" onclick="event.stopPropagation();deleteSession('${s.id}')" title="حذف">🗑️</button>
+      </div>`:''}
+    </div>
+  </div>`;
+}
+
+function openSessionDetail(id){
+  const s=sessions.find(x=>x.id===id); if(!s) return;
+  const c=courses.find(x=>x.id===s.courseId);
+  $('ov-ses-title').textContent=s.courseName||c?.name||'جلسة';
+  const body=$('ov-ses-details');
+  body.innerHTML=`
+    <div class="info-row"><span class="info-lbl">الدورة</span><span class="info-val">${esc(s.courseName||c?.name||'—')}</span></div>
+    <div class="info-row"><span class="info-lbl">التاريخ</span><span class="info-val">${esc(fmtDate(s.date))}</span></div>
+    <div class="info-row"><span class="info-lbl">الوقت</span><span class="info-val" style="direction:ltr">${esc(s.startTime||'—')} ← ${esc(s.endTime||'—')}</span></div>
+    <div class="info-row"><span class="info-lbl">رابط Zoom</span>
+      <a href="${esc(s.zoomLink||'#')}" target="_blank" rel="noopener" class="btn btn-primary" style="padding:6px 14px;font-size:12px">فتح Zoom</a>
+    </div>`;
+  openOverlay('ov-session');
+}
+
+function inlineEditSession(id){
+  const s=sessions.find(x=>x.id===id); if(!s) return;
+  const card=document.querySelector(`.session-card .session-course`)?.closest('.session-card');
+  // find the right card
+  const cards=document.querySelectorAll('#sessions-list .session-card');
+  let target=null;
+  cards.forEach(card=>{
+    if(card.querySelector('button[onclick*="'+id+'"]')) target=card;
+  });
+  if(!target) return;
+  const courseOpts=courses.map(c=>`<option value="${c.id}"${c.id===s.courseId?' selected':''}>${esc(c.name)}</option>`).join('');
+  target.outerHTML=`
+    <div class="row-edit-form" id="edit-ses-${id}">
+      <div class="row-edit-grid">
+        <div class="fg"><label class="label">الدورة</label><select class="select" id="ess-c-${id}"><option value="">اختر</option>${courseOpts}</select></div>
+        <div class="fg"><label class="label">التاريخ</label><input class="input" type="date" id="ess-d-${id}" value="${s.date||''}"/></div>
+        <div class="fg"><label class="label">من</label><input class="input" type="time" id="ess-f-${id}" value="${s.startTime||''}"/></div>
+        <div class="fg"><label class="label">إلى</label><input class="input" type="time" id="ess-t-${id}" value="${s.endTime||''}"/></div>
+        <div class="fg full"><label class="label">رابط Zoom</label><input class="input ltr" id="ess-z-${id}" value="${esc(s.zoomLink||'')}"/></div>
+      </div>
+      <div class="row-edit-actions">
+        <button class="btn btn-ghost" onclick="renderSessions()">إلغاء</button>
+        <button class="btn btn-primary" onclick="saveSessionEdit('${id}')">حفظ</button>
+      </div>
+    </div>`;
+}
+async function saveSessionEdit(id){
+  const courseId=$('ess-c-'+id)?.value;
+  const date=$('ess-d-'+id)?.value;
+  const from=$('ess-f-'+id)?.value;
+  const to=$('ess-t-'+id)?.value;
+  const zoom=$('ess-z-'+id)?.value.trim();
+  if(!courseId||!date||!from||!to||!zoom){toast('⚠️ جميع الحقول مطلوبة');return;}
+  const s=sessions.find(x=>x.id===id); if(!s) return;
+  const c=courses.find(x=>x.id===courseId);
+  s.courseId=courseId; s.courseName=c?.name||''; s.date=date; s.startTime=from; s.endTime=to; s.zoomLink=zoom;
+  renderSessions();
+  try{
+    sync('saving');
+    await db.collection('sessions2').doc(id).update({courseId,courseName:c?.name||'',date,startTime:from,endTime:to,zoomLink:zoom});
+    sync('saved'); toast('✓ تم التحديث');
+  }catch(e){sync('saved');toast('⚠️ '+e.message);}
+}
+async function deleteSession(id){
+  if(!confirm('حذف هذه الجلسة؟')) return;
+  sessions=sessions.filter(s=>s.id!==id);
+  renderSessions(); updateCounts();
+  try{await db.collection('sessions2').doc(id).delete();toast('تم الحذف');}
+  catch(e){toast('⚠️ '+e.message);}
+}
+
+// ══════════════════════════════════════════════
+// SECTION 4: HISTORY + LIVE SESSION
+// ══════════════════════════════════════════════
+function renderHistory(){
+  const list=$('history-list');
+  if(!list) return;
+  const all=[...sessions].sort((a,b)=>{
+    const order={scheduled:0,active:1,completed:2};
+    return (order[a.status]||0)-(order[b.status]||0);
+  });
+  if(!all.length){
+    list.innerHTML='<div class="empty"><div class="empty-icon">📋</div><strong>لا توجد جلسات</strong>أضف جلسات من تبويب الجلسات</div>';
+    return;
+  }
+  list.innerHTML=all.map(s=>{
+    const c=courses.find(x=>x.id===s.courseId);
+    const dateStr=fmtDate(s.date);
+    const isActive=s.status==='active'||s.id===liveSessionId;
+    const isCompleted=s.status==='completed';
+    let badge='';
+    if(isCompleted&&s.total){
+      const rate=Math.round((s.present/s.total)*100);
+      const cls=rate>=80?'ab-green':rate>=50?'ab-amber':'ab-red';
+      badge=`<span class="attend-badge ${cls}">✓ ${s.present}/${s.total} · ${rate}%</span>`;
+    }
+    return `<div class="session-card${isCompleted?' completed clickable':isActive?' active-session':''}"
+      ${isCompleted?`onclick="showHistoryDetail('${s.id}')"`:''}>
+      <div class="session-top">
+        <div class="session-info">
+          <div class="session-course">${esc(s.courseName||c?.name||'—')}</div>
+          <div class="session-time">${esc(dateStr)} · ${esc(s.startTime||'')} ← ${esc(s.endTime||'')}</div>
+        </div>
+        <div class="session-btns">
+          ${badge}
+          ${isCompleted?'':`<button class="btn btn-olive" style="font-size:12px;padding:8px 12px"
+            onclick="event.stopPropagation();${isActive?'':'startSession(\''+s.id+'\')'}"
+            ${isActive?'disabled':''}>
+            ${isActive?'🔴 نشطة':'▶ بدء الجلسة'}</button>`}
+          ${isActive?`<button class="btn btn-crimson" style="font-size:12px;padding:8px 12px"
+            onclick="event.stopPropagation();openAttendanceOverlay('${s.id}')">⏹ إنهاء</button>`:''}
+        </div>
+      </div>
+      ${isCompleted&&s.attendees?`<div class="session-attendees">
+        ${s.attendees.filter(a=>a.status==='present').map(a=>`<span class="chip chip-p">✓ ${esc(a.name)}</span>`).join('')}
+        ${s.attendees.filter(a=>a.status==='absent').map(a=>`<span class="chip chip-a">✗ ${esc(a.name)}</span>`).join('')}
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+async function loadHistory(){
+  renderHistory();
+}
+
+async function startSession(id){
+  const s=sessions.find(x=>x.id===id); if(!s) return;
+  if(liveSessionId&&liveSessionId!==id){toast('⚠️ يوجد جلسة نشطة بالفعل');return;}
+  liveSessionId=id; liveStartTime=new Date(); s.status='active';
+  liveAttendance={};
+  const stus=students.filter(x=>x.courseId===s.courseId);
+  stus.forEach(x=>liveAttendance[x.id]='present');
+  renderHistory(); updateCounts();
+  try{
+    await db.collection('sessions2').doc(id).update({status:'active',startedAt:firebase.firestore.FieldValue.serverTimestamp()});
+  }catch(e){}
+  openAttendanceOverlay(id);
+}
+
+function openAttendanceOverlay(id){
+  const s=sessions.find(x=>x.id===id); if(!s) return;
+  const c=courses.find(x=>x.id===s.courseId);
+  $('att-overlay-title').textContent=(s.courseName||c?.name||'جلسة')+' — '+fmtDate(s.date);
+  renderAttStudents(s);
+  // Timer
+  clearInterval(liveTimerInterval);
+  liveTimerInterval=setInterval(()=>{
+    if(!liveStartTime) return;
+    const sec=Math.floor((Date.now()-liveStartTime.getTime())/1000);
+    $('live-timer').textContent=pad(Math.floor(sec/3600))+':'+pad(Math.floor((sec%3600)/60))+':'+pad(sec%60);
+  },1000);
+  openOverlay('ov-attendance');
+}
+
+function renderAttStudents(s){
+  const stus=students.filter(x=>x.courseId===s.courseId);
+  const list=$('att-students-list');
+  if(!stus.length){
+    list.innerHTML='<div class="empty"><strong>لا يوجد طلاب في هذه الدورة</strong></div>';return;
+  }
+  list.innerHTML=stus.map(st=>{
+    const status=liveAttendance[st.id]||'present';
+    return `<div class="att-row ${status}" id="attr-${st.id}">
+      <div class="avatar ${avClass(st.name)}">${esc(initials(st.name))}</div>
+      <div class="att-name">${esc(st.name)}</div>
+      <div class="att-btns">
+        <button class="att-pick ${status==='present'?'on-p':''}" onclick="setAtt('${st.id}','present')">حاضر ✓</button>
+        <button class="att-pick ${status==='absent'?'on-a':''}" onclick="setAtt('${st.id}','absent')">غائب ✗</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function setAtt(stuId,status){
+  liveAttendance[stuId]=status;
+  const row=$('attr-'+stuId); if(!row) return;
+  row.className='att-row '+status;
+  row.querySelectorAll('.att-pick').forEach(b=>b.classList.remove('on-p','on-a'));
+  row.querySelector(`.att-pick:${status==='present'?'first':'last'}-child`).classList.add(status==='present'?'on-p':'on-a');
+}
+function markAllAtt(status){
+  Object.keys(liveAttendance).forEach(id=>liveAttendance[id]=status);
+  if(liveSessionId){const s=sessions.find(x=>x.id===liveSessionId);if(s)renderAttStudents(s);}
+}
+
+function confirmEndSession(){
+  if(!liveSessionId) return;
+  const s=sessions.find(x=>x.id===liveSessionId); if(!s) return;
+  const c=courses.find(x=>x.id===s.courseId);
+  const now=new Date();
+  const durSec=liveStartTime?Math.floor((now-liveStartTime)/1000):0;
+  const stus=students.filter(x=>x.courseId===s.courseId);
+  const present=stus.filter(x=>liveAttendance[x.id]==='present').length;
+  const absent=stus.length-present;
+  const startStr=liveStartTime?liveStartTime.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}):'—';
+  const endStr=now.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+  $('end-summary').innerHTML=`
+    <div class="info-row"><span class="info-lbl">الدورة</span><span class="info-val">${esc(s.courseName||c?.name||'—')}</span></div>
+    <div class="info-row"><span class="info-lbl">التاريخ</span><span class="info-val">${esc(fmtDate(s.date))}</span></div>
+    <div class="info-row"><span class="info-lbl">الوقت</span><span class="info-val" style="direction:ltr">${esc(startStr)} ← ${esc(endStr)}</span></div>
+    <div class="info-row"><span class="info-lbl">المدة</span><span class="info-val">${fmtDuration(durSec)}</span></div>
+    <div class="info-row"><span class="info-lbl">الحضور</span><span class="info-val">✓ ${present} حاضر · ✗ ${absent} غائب · من ${stus.length}</span></div>`;
+  $('rec-link').value='';
+  openModal('mod-end');
+}
+
+async function saveSession(){
+  if(!liveSessionId) return;
+  const s=sessions.find(x=>x.id===liveSessionId); if(!s) return;
+  const now=new Date();
+  const durSec=liveStartTime?Math.floor((now-liveStartTime)/1000):0;
+  const stus=students.filter(x=>x.courseId===s.courseId);
+  const attendees=stus.map(st=>({name:st.name,status:liveAttendance[st.id]||'absent'}));
+  const present=attendees.filter(a=>a.status==='present').length;
+  const absent=attendees.length-present;
+  const startStr=liveStartTime?liveStartTime.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}):'—';
+  const endStr=now.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+  const recLink=$('rec-link').value.trim();
+  const update={
+    status:'completed',
+    endedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    durationSeconds:durSec,
+    attendees,present,absent,total:stus.length,
+    actualStartTime:startStr,actualEndTime:endStr,
+    recordingLink:recLink||null
+  };
+  Object.assign(s,update);
+  clearInterval(liveTimerInterval); liveTimerInterval=null;
+  liveSessionId=null; liveStartTime=null; liveAttendance={};
+  closeModal('mod-end'); closeOverlay('ov-attendance');
+  renderHistory(); updateCounts();
+  try{
+    sync('saving');
+    await db.collection('sessions2').doc(s.id).update(update);
+    sync('saved'); toast('✓ تم حفظ الجلسة بنجاح');
+  }catch(e){sync('saved');toast('⚠️ '+e.message);}
+}
+
+function showHistoryDetail(id){
+  const s=sessions.find(x=>x.id===id); if(!s) return;
+  const c=courses.find(x=>x.id===s.courseId);
+  $('hist-modal-title').textContent=s.courseName||c?.name||'جلسة';
+  const rate=s.total?Math.round((s.present/s.total)*100):0;
+  const rateClass=rate>=80?'ab-green':rate>=50?'ab-amber':'ab-red';
+  $('hist-modal-body').innerHTML=`
+    <div class="info-row"><span class="info-lbl">الدورة</span><span class="info-val">${esc(s.courseName||c?.name||'—')}</span></div>
+    <div class="info-row"><span class="info-lbl">التاريخ</span><span class="info-val">${esc(fmtDate(s.date))}</span></div>
+    <div class="info-row"><span class="info-lbl">الوقت</span><span class="info-val" style="direction:ltr">${esc(s.actualStartTime||s.startTime||'—')} ← ${esc(s.actualEndTime||s.endTime||'—')}</span></div>
+    ${s.durationSeconds?`<div class="info-row"><span class="info-lbl">المدة</span><span class="info-val">${fmtDuration(s.durationSeconds)}</span></div>`:''}
+    <div class="info-row"><span class="info-lbl">الحضور</span><span class="attend-badge ${rateClass}">✓ ${s.present||0} / ${s.total||0} · ${rate}%</span></div>
+    ${s.recordingLink?`<div class="info-row"><span class="info-lbl">التسجيل</span>
+      <a href="${esc(s.recordingLink)}" target="_blank" rel="noopener" class="btn btn-primary" style="padding:6px 14px;font-size:12px">▶ فتح التسجيل</a>
+    </div>`:''}
+    <div class="divider"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:4px">
+      ${(s.attendees||[]).filter(a=>a.status==='present').map(a=>`<span class="chip chip-p">✓ ${esc(a.name)}</span>`).join('')}
+      ${(s.attendees||[]).filter(a=>a.status==='absent').map(a=>`<span class="chip chip-a">✗ ${esc(a.name)}</span>`).join('')}
+    </div>`;
+  openModal('mod-history');
+}
+
+// ══════════════════════════════════════════════
+// KEYBOARD + ESCAPE
+// ══════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    const openMod=document.querySelector('.modal-wrap.open');
+    if(openMod){openMod.classList.remove('open');return;}
+    const openOv=document.querySelector('.overlay.open');
+    if(openOv){
+      if(openOv.id==='ov-attendance'){confirmEndSession();}
+      else{openOv.classList.remove('open');if(!document.querySelector('.overlay.open'))document.body.style.overflow='';}
+    }
+  }
+});
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+initFirestore();
+// Right-click on logo to remove image
+document.getElementById('logo-wrap').oncontextmenu=function(e){
+  e.preventDefault();
+  if($('logo-img').src&&$('logo-img').style.display!=='none'){
+    if(confirm('حذف الصورة؟')) removeLogoImage();
+  }
+};
+// Set today's date as default for session date
+const today=new Date().toISOString().split('T')[0];
+$('ses-date').value=today;
+</script>
+</body>
+</html>
