@@ -508,9 +508,34 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
   .overlay-header{padding:10px 12px}
   .overlay-body{padding:14px 12px}
 }
+
+/* ── LANGUAGE TOGGLE ── */
+.lang-bar{
+  background:var(--paper2);border-bottom:1px solid var(--line);
+  padding:6px 16px;display:flex;justify-content:flex-end;gap:6px;
+}
+.lang-btn{
+  padding:5px 16px;border-radius:20px;border:1.5px solid var(--line2);
+  font-family:var(--font-body);font-size:13px;font-weight:700;
+  cursor:pointer;background:transparent;color:var(--ink3);
+  transition:var(--transition);letter-spacing:.5px;
+  min-height:34px;
+}
+.lang-btn:hover{border-color:var(--ink3);color:var(--ink)}
+.lang-btn.active{background:var(--indigo);border-color:var(--indigo);color:#fff}
+@media(max-width:600px){
+  .lang-bar{padding:5px 12px}
+  .lang-btn{font-size:12px;padding:4px 12px}
+}
 </style>
 </head>
 <body>
+
+<!-- ═══ LANGUAGE BAR ═══ -->
+<div class="lang-bar">
+  <button class="lang-btn active" id="lang-ar" onclick="setLang('ar')">AR عربي</button>
+  <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN English</button>
+</div>
 
 <!-- ═══ HEADER ═══ -->
 <header class="app-header">
@@ -589,18 +614,18 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
     <div class="section-form">
       <div class="form-grid">
         <div class="fg">
-          <label class="label">اسم الدورة</label>
+          <label class="label" id="label-course-name">اسم الدورة</label>
           <input class="input" id="c-name" placeholder="مثال: الرياضيات 101" onkeydown="if(event.key==='Enter')addCourse()"/>
           <span class="err-msg" id="c-name-err">اسم الدورة مطلوب</span>
         </div>
         <div class="fg">
-          <label class="label">رابط Zoom</label>
+          <label class="label" id="label-zoom">رابط Zoom</label>
           <input class="input ltr" id="c-zoom" placeholder="https://zoom.us/j/..." onkeydown="if(event.key==='Enter')addCourse()"/>
           <span class="err-msg" id="c-zoom-err">رابط Zoom مطلوب</span>
         </div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-olive" onclick="addCourse()">
+        <button class="btn btn-olive" id="btn-add-course" onclick="addCourse()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
           إضافة الدورة
         </button>
@@ -642,21 +667,21 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
     </div>
     <div class="form-grid">
       <div class="fg">
-        <label class="label">اسم الطالب</label>
+        <label class="label" id="label-stu-name">اسم الطالب</label>
         <input class="input" id="s-name" placeholder="الاسم الكامل"/>
         <span class="err-msg" id="s-name-err">اسم الطالب مطلوب</span>
       </div>
       <div class="fg">
-        <label class="label">تاريخ الميلاد</label>
+        <label class="label" id="label-dob">تاريخ الميلاد</label>
         <input class="input" type="date" id="s-dob" oninput="calcAge()"/>
         <span class="err-msg" id="s-dob-err">تاريخ الميلاد مطلوب</span>
       </div>
       <div class="fg">
-        <label class="label">العمر</label>
+        <label class="label" id="label-age">العمر</label>
         <div class="age-badge empty" id="age-display">— سنة</div>
       </div>
       <div class="fg">
-        <label class="label">الدورة</label>
+        <label class="label" id="label-stu-course">الدورة</label>
         <select class="select" id="s-course">
           <option value="">اختر الدورة</option>
         </select>
@@ -664,7 +689,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-olive" onclick="addStudent()">
+      <button class="btn btn-olive" id="btn-add-student" onclick="addStudent()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
         إضافة الطالب
       </button>
@@ -708,7 +733,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
     </div>
     <div class="form-grid">
       <div class="fg">
-        <label class="label">الدورة</label>
+        <label class="label" id="label-ses-course">الدورة</label>
         <select class="select" id="ses-course" onchange="onSesCourseChange()">
           <option value="">اختر الدورة</option>
         </select>
@@ -729,13 +754,13 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
         <span class="err-msg" id="ses-time-err">وقت البداية والنهاية مطلوبان</span>
       </div>
       <div class="fg">
-        <label class="label">رابط Zoom للجلسة</label>
+        <label class="label" id="label-ses-zoom">رابط Zoom للجلسة</label>
         <input class="input ltr" id="ses-zoom" placeholder="https://zoom.us/j/..."/>
         <span class="err-msg" id="ses-zoom-err">رابط Zoom مطلوب</span>
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-olive" onclick="addSession()">
+      <button class="btn btn-olive" id="btn-add-session" onclick="addSession()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
         إضافة الجلسة
       </button>
@@ -1034,6 +1059,136 @@ function removeLogoImage(){
   db.collection('config').doc('app').set({logoImage:''},{merge:true})
     .then(()=>toast('✓ تم حذف الصورة'))
     .catch(err=>toast('⚠️ '+err.message));
+}
+
+// ══════════════════════════════════════════════
+// LANGUAGE SWITCH
+// ══════════════════════════════════════════════
+const TRANSLATIONS = {
+  ar: {
+    appSubtitle: 'إدارة الدورات والطلاب والجلسات',
+    tab1: 'الدورات', tab2: 'الطلاب', tab3: 'الجلسات', tab4: 'السجل',
+    sec1Courses: 'إضافة دورة جديدة', sec2Courses: 'الدورات المتاحة',
+    sec1Students: 'إضافة طالب جديد', sec2Students: 'قائمة الطلاب',
+    sec1Sessions: 'إضافة جلسة', sec2Sessions: 'الجلسات المجدولة',
+    secHistory: 'السجل',
+    labelCourseName: 'اسم الدورة', labelZoom: 'رابط Zoom',
+    btnAddCourse: 'إضافة الدورة',
+    labelStuName: 'اسم الطالب', labelDob: 'تاريخ الميلاد',
+    labelAge: 'العمر', labelCourse: 'الدورة',
+    btnAddStudent: 'إضافة الطالب',
+    placeholderCourse: 'اختر الدورة', placeholderDate: 'تاريخ الجلسة',
+    labelFrom: 'من', labelTo: 'إلى', labelSesZoom: 'رابط Zoom للجلسة',
+    btnAddSession: 'إضافة الجلسة',
+    btnShowCodes: '👁 إظهار الرموز', btnHideCodes: '🙈 إخفاء الرموز',
+    btnStartSession: '▶ بدء الجلسة', btnEndSession: '⏹ إنهاء الجلسة',
+    btnAllPresent: '✓ الكل حاضر', btnAllAbsent: '✗ الكل غائب',
+    btnPresent: 'حاضر ✓', btnAbsent: 'غائب ✗',
+    btnSaveEnd: 'إنهاء وحفظ', btnOpenZoom: 'فتح Zoom',
+    recLinkLabel: 'رابط التسجيل (اختياري)',
+    syncSaved: 'محفوظ', syncSaving: 'حفظ...',
+    dir: 'rtl'
+  },
+  en: {
+    appSubtitle: 'Manage Courses, Students & Sessions',
+    tab1: 'Courses', tab2: 'Students', tab3: 'Sessions', tab4: 'History',
+    sec1Courses: 'Add New Course', sec2Courses: 'Available Courses',
+    sec1Students: 'Add New Student', sec2Students: 'Student List',
+    sec1Sessions: 'Add Session', sec2Sessions: 'Scheduled Sessions',
+    secHistory: 'History',
+    labelCourseName: 'Course Name', labelZoom: 'Zoom Link',
+    btnAddCourse: 'Add Course',
+    labelStuName: 'Student Name', labelDob: 'Date of Birth',
+    labelAge: 'Age', labelCourse: 'Course',
+    btnAddStudent: 'Add Student',
+    placeholderCourse: 'Select Course', placeholderDate: 'Session Date',
+    labelFrom: 'From', labelTo: 'To', labelSesZoom: 'Session Zoom Link',
+    btnAddSession: 'Add Session',
+    btnShowCodes: '👁 Show Codes', btnHideCodes: '🙈 Hide Codes',
+    btnStartSession: '▶ Start Session', btnEndSession: '⏹ End Session',
+    btnAllPresent: '✓ All Present', btnAllAbsent: '✗ All Absent',
+    btnPresent: 'Present ✓', btnAbsent: 'Absent ✗',
+    btnSaveEnd: 'End & Save', btnOpenZoom: 'Open Zoom',
+    recLinkLabel: 'Recording Link (optional)',
+    syncSaved: 'Saved', syncSaving: 'Saving...',
+    dir: 'ltr'
+  }
+};
+
+let currentLang = 'ar';
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = TRANSLATIONS[lang];
+
+  // Toggle button states
+  $('lang-ar').classList.toggle('active', lang === 'ar');
+  $('lang-en').classList.toggle('active', lang === 'en');
+
+  // Document direction
+  document.documentElement.lang = lang;
+  document.documentElement.dir = t.dir;
+  document.body.style.direction = t.dir;
+
+  // App subtitle
+  const sub = document.querySelector('.app-subtitle');
+  if(sub) sub.textContent = t.appSubtitle;
+
+  // Tab labels (only if not customised by user)
+  const tabMap = {courses:'tab1', students:'tab2', sessions:'tab3', history:'tab4'};
+  Object.entries(tabMap).forEach(([tab, key]) => {
+    const el = $('tab-label-'+tab);
+    if(el) el.textContent = t[key];
+  });
+
+  // Section titles
+  const secMap = {
+    'add-course-title': 'sec1Courses',
+    'avail-courses-title': 'sec2Courses',
+    'add-stu-title': 'sec1Students',
+    'stu-list-title': 'sec2Students',
+    'add-ses-title': 'sec1Sessions',
+    'sched-title': 'sec2Sessions',
+    'hist-title': 'secHistory'
+  };
+  Object.entries(secMap).forEach(([id, key]) => {
+    const el = $(id); if(el) el.textContent = t[key];
+  });
+
+  // Form labels
+  const labelMap = {
+    'label-course-name': 'labelCourseName',
+    'label-zoom': 'labelZoom',
+    'label-stu-name': 'labelStuName',
+    'label-dob': 'labelDob',
+    'label-age': 'labelAge',
+    'label-stu-course': 'labelCourse',
+    'label-ses-course': 'labelCourse',
+    'label-ses-zoom': 'labelSesZoom',
+    'label-from': 'labelFrom',
+    'label-to': 'labelTo'
+  };
+  Object.entries(labelMap).forEach(([id, key]) => {
+    const el = $(id); if(el && t[key]) el.textContent = t[key];
+  });
+
+  // Buttons
+  const btnMap = {
+    'btn-add-course': 'btnAddCourse',
+    'btn-add-student': 'btnAddStudent',
+    'btn-add-session': 'btnAddSession',
+    'codes-toggle-btn': codesRevealed ? 'btnHideCodes' : 'btnShowCodes'
+  };
+  Object.entries(btnMap).forEach(([id, key]) => {
+    const el = $(id); if(el && t[key]) el.textContent = t[key];
+  });
+
+  // Sync badge
+  $('sync-lbl').textContent = t.syncSaved;
+
+  // Re-render to update dynamic content
+  renderAll();
+  renderHistory();
 }
 
 function initFirestore(){
