@@ -118,7 +118,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
   color:var(--indigo);font-size:12px;font-weight:700;flex-shrink:0;
 }
 .tab-btn.active .tab-count{background:var(--indigo);color:#fff}
-.tab-label-wrap{cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.tab-label-wrap{cursor:default;display:inline-flex;align-items:center;gap:4px}
 .tab-label-input{
   font-family:var(--font-head);font-size:16px;font-weight:600;
   border:none;border-bottom:1px solid var(--indigo);background:transparent;
@@ -918,7 +918,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       <div class="modal-title">🔐 رمز الأدمن</div>
       <button class="btn-icon" onclick="closeModal('mod-admin')">✕</button>
     </div>
-    <div style="font-size:13px;color:var(--ink3);margin-bottom:14px">أدخل رمز المدرس أو مساعد المدرس لعرض رموز الطلاب</div>
+    <div id="admin-modal-hint" style="font-size:13px;color:var(--ink3);margin-bottom:14px">أدخل رمز المدرس أو مساعد المدرس</div>
     <input class="input" type="password" id="admin-code-inp" placeholder="الرمز"
       style="text-align:center;letter-spacing:6px;font-size:18px;font-weight:700;margin-bottom:6px;max-width:200px;display:block;margin:0 auto 12px"
       onkeydown="if(event.key==='Enter')verifyAdmin()"/>
@@ -1036,19 +1036,41 @@ function handleLogoUpload(event){
   const file=event.target.files[0];
   if(!file) return;
   if(!file.type.startsWith('image/')){toast('⚠️ اختر ملف صورة');return;}
-  if(file.size>2*1024*1024){toast('⚠️ الصورة أكبر من 2MB');return;}
+  if(file.size>10*1024*1024){toast('⚠️ الصورة أكبر من 10MB');return;}
+
   const reader=new FileReader();
   reader.onload=function(e){
-    const result=e.target.result;
-    $('logo-img').src=result;
-    $('logo-img').style.display='block';
-    $('logo-letter').style.display='none';
-    db.collection('config').doc('app').set({logoImage:result},{merge:true})
-      .then(()=>toast('✓ تم تحديث الصورة'))
-      .catch(err=>toast('⚠️ '+err.message));
+    // Compress image using canvas before saving to Firestore
+    const img=new Image();
+    img.onload=function(){
+      // Max dimension 300px — more than enough for a logo
+      const MAX=300;
+      let w=img.width, h=img.height;
+      if(w>h){ if(w>MAX){h=Math.round(h*MAX/w);w=MAX;} }
+      else    { if(h>MAX){w=Math.round(w*MAX/h);h=MAX;} }
+
+      const canvas=document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+
+      // JPEG at 80% quality — typically 10-30KB for a logo
+      const compressed=canvas.toDataURL('image/jpeg',0.80);
+      const kb=Math.round(compressed.length*0.75/1024);
+
+      // Show in header immediately
+      $('logo-img').src=compressed;
+      $('logo-img').style.display='block';
+      $('logo-letter').style.display='none';
+
+      // Save compressed version to Firestore
+      db.collection('config').doc('app').set({logoImage:compressed},{merge:true})
+        .then(()=>toast('✓ تم تحديث الصورة ('+kb+' KB)'))
+        .catch(err=>toast('⚠️ '+err.message));
+    };
+    img.src=e.target.result;
   };
   reader.readAsDataURL(file);
-  // Reset input so same file can be re-uploaded
   event.target.value='';
 }
 
@@ -1266,23 +1288,64 @@ function stKeydown(e,key){
   if(e.key==='Enter')saveSectionTitle(key);
   if(e.key==='Escape'){const inp=$(key+'-input');inp.style.display='none';$(key).style.display='';}
 }
-function editTabLabel(tab,e){
+// Tab editing — pending tab name stored here until admin verified
+let _pendingEditTab = null;
+
+function editTabLabel(tab, e){
   e.stopPropagation();
-  const span=$('tab-label-'+tab);
-  const inp=document.createElement('input');
-  inp.className='tab-label-input';inp.value=span.textContent.trim();
-  span.parentNode.replaceChild(inp,span);
-  inp.focus();inp.select();
-  inp.onblur=()=>{
-    const v=inp.value.trim()||span.textContent;
-    span.textContent=v;
-    inp.parentNode.replaceChild(span,inp);
-    titles['tab-'+tab]=v; saveConfig({titles});
-  };
-  inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')inp.blur();};
+  if(adminVerified){
+    _doEditTabLabel(tab);
+    return;
+  }
+  // Not yet verified — open the admin modal
+  _pendingEditTab = tab;
+  $('admin-code-inp').value = '';
+  // Override the modal verify button temporarily
+  $('admin-modal-hint').textContent = 'أدخل رمز المدرس (01) أو المساعد (02) لتعديل التبويبات';
+  openModal('mod-admin');
+  setTimeout(()=>$('admin-code-inp').focus(), 80);
 }
+
+function verifyAdmin(){
+  const code = $('admin-code-inp').value.trim();
+  if(code !== '01' && code !== '02'){ toast('❌ رمز غير صحيح'); return; }
+  adminVerified = true;
+  codesRevealed = true;
+  $('codes-toggle-btn').textContent = '🙈 إخفاء الرموز';
+  closeModal('mod-admin');
+  renderStudents();
+  toast('🔓 تم التحقق كأدمن');
+  // If we came from a tab edit request, continue it
+  if(_pendingEditTab){
+    const tab = _pendingEditTab;
+    _pendingEditTab = null;
+    setTimeout(()=>_doEditTabLabel(tab), 100);
+  }
+}
+
+function _doEditTabLabel(tab){
+  const span = $('tab-label-'+tab);
+  if(!span) return;
+  const inp = document.createElement('input');
+  inp.className = 'tab-label-input';
+  inp.value = span.textContent.trim();
+  span.parentNode.replaceChild(inp, span);
+  inp.focus(); inp.select();
+  inp.onblur = () => {
+    const v = inp.value.trim() || span.textContent;
+    span.textContent = v;
+    inp.parentNode.replaceChild(span, inp);
+    titles['tab-'+tab] = v;
+    saveConfig({titles});
+    toast('✓ تم حفظ اسم التبويب');
+  };
+  inp.onkeydown = ev => {
+    if(ev.key === 'Enter') inp.blur();
+    if(ev.key === 'Escape'){ span.textContent = span.textContent; inp.parentNode.replaceChild(span, inp); }
+  };
+}
+
 function editAppTitle(){
-  $('app-title').style.display='none';
   $('app-title-input').style.display='block';
   $('app-title-input').value=$('app-title').textContent.trim();
   $('app-title-input').focus();$('app-title-input').select();
@@ -1579,15 +1642,9 @@ function toggleCodes(){
     renderStudents(); return;
   }
   $('admin-code-inp').value='';
+  $('admin-modal-hint').textContent='أدخل رمز المدرس (01) أو المساعد (02) لعرض رموز الطلاب';
   openModal('mod-admin');
   setTimeout(()=>$('admin-code-inp').focus(),80);
-}
-function verifyAdmin(){
-  const code=$('admin-code-inp').value.trim();
-  if(code!=='01'&&code!=='02'){toast('❌ رمز غير صحيح');return;}
-  adminVerified=true; codesRevealed=true;
-  $('codes-toggle-btn').textContent='🙈 إخفاء الرموز';
-  closeModal('mod-admin'); renderStudents(); toast('🔓 تم عرض الرموز');
 }
 
 // ══════════════════════════════════════════════
