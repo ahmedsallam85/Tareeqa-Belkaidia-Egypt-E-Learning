@@ -687,6 +687,16 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
         </select>
         <span class="err-msg" id="s-course-err">يجب اختيار الدورة</span>
       </div>
+      <div class="fg">
+        <label class="label">رقم الهاتف</label>
+        <input class="input ltr" id="s-phone" placeholder="مثال: 01012345678" type="tel"/>
+        <span class="err-msg" id="s-phone-err">رقم الهاتف غير صحيح</span>
+      </div>
+      <div class="fg">
+        <label class="label">رقم الهوية / الرقم القومي</label>
+        <input class="input ltr" id="s-idnum" placeholder="رقم الهوية"/>
+        <span class="err-msg" id="s-idnum-err">رقم الهوية مطلوب</span>
+      </div>
     </div>
     <div class="btn-row">
       <button class="btn btn-olive" id="btn-add-student" onclick="addStudent()">
@@ -1538,18 +1548,24 @@ function addStudent(){
   const name=$('s-name').value.trim();
   const dob=$('s-dob').value;
   const courseId=$('s-course').value;
+  const phone=$('s-phone').value.trim();
+  const idnum=$('s-idnum').value.trim();
   let ok=true;
   $('s-name-err').classList.toggle('show',!name); if(!name) ok=false;
   $('s-dob-err').classList.toggle('show',!dob); if(!dob) ok=false;
   $('s-course-err').classList.toggle('show',!courseId); if(!courseId) ok=false;
+  // Phone: optional but validate format if entered
+  const phoneValid = !phone || /^[0-9+\s\-()]{6,20}$/.test(phone);
+  $('s-phone-err').classList.toggle('show',!phoneValid); if(!phoneValid) ok=false;
   if(!ok) return;
   const age=calcAgeFromDob(dob);
   const code=studentCodes[name]||(()=>{const c=genCode();studentCodes[name]=c;return c;})();
-  const s={id:uid(),name,dob,age:age||0,courseId,code};
+  const s={id:uid(),name,dob,age:age||0,courseId,code,phone:phone||'',idnum:idnum||''};
   students.push(s);
   $('s-name').value='';$('s-dob').value='';$('s-course').value='';
+  $('s-phone').value='';$('s-idnum').value='';
   $('age-display').textContent='— سنة';$('age-display').className='age-badge empty';
-  ['s-name-err','s-dob-err','s-course-err'].forEach(e=>$(e).classList.remove('show'));
+  ['s-name-err','s-dob-err','s-course-err','s-phone-err','s-idnum-err'].forEach(e=>$(e).classList.remove('show'));
   renderStudents(); updateCounts();
   saveConfig({students,studentCodes}); toast('✓ تمت إضافة الطالب: '+name);
   $('s-name').focus();
@@ -1582,6 +1598,8 @@ function renderStudents(){
           <span class="pill pill-age">${s.age||'—'} سنة</span>
           ${c?`<span class="pill pill-course">${esc(c.name)}</span>`:''}
           <span class="pill ${codeCls}">${esc(code)}</span>
+          ${s.phone?`<span class="pill" style="background:var(--indigo-bg);color:var(--indigo);direction:ltr">📞 ${esc(s.phone)}</span>`:''}
+          ${s.idnum?`<span class="pill" style="background:var(--paper3);color:var(--ink2);direction:ltr">🪪 ${esc(s.idnum)}</span>`:''}
         </div>
       </div>
       <div class="stu-actions">
@@ -1606,6 +1624,8 @@ function inlineEditStudent(id){
         <div class="fg"><label class="label">الدورة</label>
           <select class="select" id="esc-${id}"><option value="">اختر</option>${courseOpts}</select>
         </div>
+        <div class="fg"><label class="label">رقم الهاتف</label><input class="input ltr" id="esp-${id}" value="${esc(s.phone||'')}" type="tel" placeholder="01012345678"/></div>
+        <div class="fg"><label class="label">رقم الهوية</label><input class="input ltr" id="esi-${id}" value="${esc(s.idnum||'')}" placeholder="رقم الهوية"/></div>
       </div>
       <div class="row-edit-actions">
         <button class="btn btn-ghost" onclick="renderStudents()">إلغاء</button>
@@ -1617,10 +1637,13 @@ async function saveStudentEdit(id){
   const name=$('esn-'+id)?.value.trim();
   const dob=$('esd-'+id)?.value;
   const courseId=$('esc-'+id)?.value;
+  const phone=$('esp-'+id)?.value.trim()||'';
+  const idnum=$('esi-'+id)?.value.trim()||'';
   if(!name){toast('⚠️ الاسم مطلوب');return;}
   const s=students.find(x=>x.id===id); if(!s) return;
   const oldName=s.name;
-  s.name=name; s.dob=dob; s.age=calcAgeFromDob(dob)||0; s.courseId=courseId;
+  s.name=name; s.dob=dob; s.age=calcAgeFromDob(dob)||0;
+  s.courseId=courseId; s.phone=phone; s.idnum=idnum;
   if(oldName!==name&&studentCodes[oldName]){
     studentCodes[name]=studentCodes[oldName]; delete studentCodes[oldName]; s.code=studentCodes[name];
   }
