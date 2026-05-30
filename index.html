@@ -693,9 +693,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
         <span class="err-msg" id="s-phone-err">رقم الهاتف غير صحيح</span>
       </div>
       <div class="fg">
-        <label class="label">رقم الهوية / الرقم القومي</label>
-        <input class="input ltr" id="s-idnum" placeholder="رقم الهوية"/>
-        <span class="err-msg" id="s-idnum-err">رقم الهوية مطلوب</span>
+        <label class="label"> الرقم القومي</label>
+        <input class="input ltr" id="s-idnum" placeholder="الرقم القومي"/>
+        <span class="err-msg" id="s-idnum-err">الرقم القومي مطلوب</span>
       </div>
     </div>
     <div class="btn-row">
@@ -1625,7 +1625,7 @@ function inlineEditStudent(id){
           <select class="select" id="esc-${id}"><option value="">اختر</option>${courseOpts}</select>
         </div>
         <div class="fg"><label class="label">رقم الهاتف</label><input class="input ltr" id="esp-${id}" value="${esc(s.phone||'')}" type="tel" placeholder="01012345678"/></div>
-        <div class="fg"><label class="label">رقم الهوية</label><input class="input ltr" id="esi-${id}" value="${esc(s.idnum||'')}" placeholder="رقم الهوية"/></div>
+        <div class="fg"><label class="label">الرقم القومي</label><input class="input ltr" id="esi-${id}" value="${esc(s.idnum||'')}" placeholder="الرقم القومي"/></div>
       </div>
       <div class="row-edit-actions">
         <button class="btn btn-ghost" onclick="renderStudents()">إلغاء</button>
