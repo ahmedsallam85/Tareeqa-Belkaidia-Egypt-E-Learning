@@ -552,7 +552,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
           <input type="text" class="app-title-input" id="app-title-input" style="display:none"
             onblur="saveAppTitle()" onkeydown="if(event.key==='Enter')saveAppTitle();if(event.key==='Escape'){this.style.display='none';$('app-title').style.display='block'}"/>
         </div>
-        <div class="app-subtitle">إدارة الدورات والطلاب والجلسات</div>
+        <div class="app-subtitle">إدارة الدورات والطلاب والمحاضرات</div>
       </div>
     </div>
     <div class="sync-badge" id="sync-badge"><span class="sync-dot"></span><span id="sync-lbl">محفوظ</span></div>
@@ -575,7 +575,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
   </button>
   <button class="tab-btn" id="tab-sessions-btn" onclick="switchTab('sessions')">
     <span class="tab-label-wrap" ondblclick="editTabLabel('sessions',event)">
-      <span id="tab-label-sessions">الجلسات</span>
+      <span id="tab-label-sessions">المحاضرات</span>
     </span>
     <span class="tab-count" id="tc-sessions">0</span>
   </button>
@@ -591,8 +591,8 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
   <div class="stat-grid" id="stat-grid" style="padding-top:14px">
     <div class="stat stat1"><div class="stat-num" id="s-courses">0</div><div class="stat-lbl">دورة</div></div>
     <div class="stat stat2"><div class="stat-num" id="s-students">0</div><div class="stat-lbl">طالب</div></div>
-    <div class="stat stat3"><div class="stat-num" id="s-sessions">0</div><div class="stat-lbl">جلسة</div></div>
-    <div class="stat stat4"><div class="stat-num" id="s-completed">0</div><div class="stat-lbl">جلسة مكتملة</div></div>
+    <div class="stat stat3"><div class="stat-num" id="s-sessions">0</div><div class="stat-lbl">محاضرة</div></div>
+    <div class="stat stat4"><div class="stat-num" id="s-completed">0</div><div class="stat-lbl">محاضرة مكتملة</div></div>
   </div>
 </div>
 
@@ -734,7 +734,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       <div class="section-title-wrap" onclick="editSectionTitle('add-ses-title')">
         <div class="section-title">
           <div class="section-title-num" style="background:var(--olive-bg);color:var(--olive)">+</div>
-          <span id="add-ses-title">إضافة جلسة</span>
+          <span id="add-ses-title">إضافة محاضرة</span>
           <span class="edit-title-hint">✏️</span>
         </div>
         <input class="section-title-input" id="add-ses-title-input" style="display:none"
@@ -750,7 +750,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
         <span class="err-msg" id="ses-course-err">يجب اختيار الدورة</span>
       </div>
       <div class="fg">
-        <label class="label">تاريخ الجلسة</label>
+        <label class="label">تاريخ المحاضرة</label>
         <input class="input" type="date" id="ses-date"/>
         <span class="err-msg" id="ses-date-err">التاريخ مطلوب</span>
       </div>
@@ -764,7 +764,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
         <span class="err-msg" id="ses-time-err">وقت البداية والنهاية مطلوبان</span>
       </div>
       <div class="fg">
-        <label class="label" id="label-ses-zoom">رابط Zoom للجلسة</label>
+        <label class="label" id="label-ses-zoom">رابط Zoom للمحاضرة</label>
         <input class="input ltr" id="ses-zoom" placeholder="https://zoom.us/j/..."/>
         <span class="err-msg" id="ses-zoom-err">رابط Zoom مطلوب</span>
       </div>
@@ -772,7 +772,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
     <div class="btn-row">
       <button class="btn btn-olive" id="btn-add-session" onclick="addSession()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-        إضافة الجلسة
+        إضافة المحاضرة
       </button>
     </div>
   </div>
@@ -782,7 +782,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       <div class="section-title-wrap" onclick="editSectionTitle('sched-title')">
         <div class="section-title">
           <div class="section-title-num">٢</div>
-          <span id="sched-title">الجلسات المجدولة</span>
+          <span id="sched-title">المحاضرات المجدولة</span>
           <span class="edit-title-hint">✏️</span>
         </div>
         <input class="section-title-input" id="sched-title-input" style="display:none"
@@ -857,7 +857,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       رجوع
     </button>
-    <div class="overlay-title"><span id="ov-ses-title">تفاصيل الجلسة</span></div>
+    <div class="overlay-title"><span id="ov-ses-title">تفاصيل المحاضرة</span></div>
   </div>
   <div class="overlay-body">
     <div class="section" style="margin-bottom:12px" id="ov-ses-details"></div>
@@ -869,7 +869,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
   <div class="overlay-header">
     <button class="overlay-back" onclick="confirmEndSession()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
-      إنهاء الجلسة
+      إنهاء المحاضرة
     </button>
     <div class="overlay-title"><span id="att-overlay-title">الحضور</span></div>
   </div>
@@ -878,7 +878,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       <div class="live-left">
         <div class="live-pulse"></div>
         <div>
-          <div class="live-label" id="live-status">🔴 جلسة مباشرة</div>
+          <div class="live-label" id="live-status">🔴 محاضرة مباشرة</div>
           <div class="live-timer" id="live-timer">00:00:00</div>
         </div>
       </div>
@@ -891,7 +891,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
     <div class="att-sticky-bar">
       <button class="btn btn-crimson" onclick="confirmEndSession()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
-        نهاية الجلسة
+        نهاية المحاضرة
       </button>
     </div>
   </div>
@@ -901,7 +901,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
 <div class="modal-wrap" id="mod-end">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-hd">
-      <div class="modal-title">⏹ إنهاء الجلسة وحفظ النتائج</div>
+      <div class="modal-title">⏹ إنهاء المحاضرة وحفظ النتائج</div>
       <button class="btn-icon" onclick="closeModal('mod-end')">✕</button>
     </div>
     <div id="end-summary"></div>
@@ -909,7 +909,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
     <div class="fg" style="margin-bottom:14px">
       <label class="label">رابط التسجيل (اختياري)</label>
       <input class="input ltr" id="rec-link" placeholder="https://zoom.us/rec/share/..."/>
-      <span style="font-size:11px;color:var(--ink3);margin-top:3px">إن سجّلت الجلسة على Zoom Cloud، الصق رابط التسجيل هنا</span>
+      <span style="font-size:11px;color:var(--ink3);margin-top:3px">إن سجّلت المحاضرة على Zoom Cloud، الصق رابط التسجيل هنا</span>
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="closeModal('mod-end')">إلغاء</button>
@@ -944,7 +944,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
 <div class="modal-wrap" id="mod-history" onclick="closeModal('mod-history')">
   <div class="modal" onclick="event.stopPropagation()" style="max-width:560px">
     <div class="modal-hd">
-      <div class="modal-title" id="hist-modal-title">تفاصيل الجلسة</div>
+      <div class="modal-title" id="hist-modal-title">تفاصيل المحاضرة</div>
       <button class="btn-icon" onclick="closeModal('mod-history')">✕</button>
     </div>
     <div id="hist-modal-body"></div>
@@ -1098,22 +1098,22 @@ function removeLogoImage(){
 // ══════════════════════════════════════════════
 const TRANSLATIONS = {
   ar: {
-    appSubtitle: 'إدارة الدورات والطلاب والجلسات',
-    tab1: 'الدورات', tab2: 'الطلاب', tab3: 'الجلسات', tab4: 'السجل',
+    appSubtitle: 'إدارة الدورات والطلاب والمحاضرات',
+    tab1: 'الدورات', tab2: 'الطلاب', tab3: 'المحاضرات', tab4: 'السجل',
     sec1Courses: 'إضافة دورة جديدة', sec2Courses: 'الدورات المتاحة',
     sec1Students: 'إضافة طالب جديد', sec2Students: 'قائمة الطلاب',
-    sec1Sessions: 'إضافة جلسة', sec2Sessions: 'الجلسات المجدولة',
+    sec1Sessions: 'إضافة محاضرة', sec2Sessions: 'المحاضرات المجدولة',
     secHistory: 'السجل',
     labelCourseName: 'اسم الدورة', labelZoom: 'رابط Zoom',
     btnAddCourse: 'إضافة الدورة',
     labelStuName: 'اسم الطالب', labelDob: 'تاريخ الميلاد',
     labelAge: 'العمر', labelCourse: 'الدورة',
     btnAddStudent: 'إضافة الطالب',
-    placeholderCourse: 'اختر الدورة', placeholderDate: 'تاريخ الجلسة',
-    labelFrom: 'من', labelTo: 'إلى', labelSesZoom: 'رابط Zoom للجلسة',
-    btnAddSession: 'إضافة الجلسة',
+    placeholderCourse: 'اختر الدورة', placeholderDate: 'تاريخ المحاضرة',
+    labelFrom: 'من', labelTo: 'إلى', labelSesZoom: 'رابط Zoom للمحاضرة',
+    btnAddSession: 'إضافة المحاضرة',
     btnShowCodes: '👁 إظهار الرموز', btnHideCodes: '🙈 إخفاء الرموز',
-    btnStartSession: '▶ بدء الجلسة', btnEndSession: '⏹ إنهاء الجلسة',
+    btnStartSession: '▶ بدء المحاضرة', btnEndSession: '⏹ إنهاء المحاضرة',
     btnAllPresent: '✓ الكل حاضر', btnAllAbsent: '✗ الكل غائب',
     btnPresent: 'حاضر ✓', btnAbsent: 'غائب ✗',
     btnSaveEnd: 'إنهاء وحفظ', btnOpenZoom: 'فتح Zoom',
@@ -1246,14 +1246,33 @@ function initFirestore(){
       $('logo-letter').style.display='';
     }
   });
-  // Sessions from separate collection
-  db.collection('sessions2').orderBy('createdAt','desc').onSnapshot(snap=>{
-    sessions=[];
-    snap.forEach(doc=>sessions.push({id:doc.id,...doc.data()}));
-    renderSessions();
-    renderHistory();
-    updateCounts();
-  });
+  // Sessions: live listener from sessions2 collection
+  db.collection('sessions2').orderBy('createdAt','desc').onSnapshot(
+    snap=>{
+      sessions=[];
+      snap.forEach(doc=>sessions.push({id:doc.id,...doc.data()}));
+      renderSessions();
+      renderHistory();
+      updateCounts();
+    },
+    err=>{
+      // orderBy fails if index not ready — fallback without ordering
+      console.warn('sessions2 orderBy failed, falling back:',err);
+      db.collection('sessions2').onSnapshot(snap=>{
+        sessions=[];
+        snap.forEach(doc=>sessions.push({id:doc.id,...doc.data()}));
+        // Sort locally by createdAt descending
+        sessions.sort((a,b)=>{
+          const ta=a.createdAt?.seconds||0;
+          const tb=b.createdAt?.seconds||0;
+          return tb-ta;
+        });
+        renderSessions();
+        renderHistory();
+        updateCounts();
+      });
+    }
+  );
 }
 
 async function saveConfig(partial){
@@ -1690,32 +1709,59 @@ async function addSession(){
   $('ses-time-err').classList.toggle('show',!from||!to); if(!from||!to) ok=false;
   $('ses-zoom-err').classList.toggle('show',!zoom); if(!zoom) ok=false;
   if(!ok) return;
+
   const c=courses.find(x=>x.id===courseId);
-  const ses={
-    id:uid(),courseId,courseName:c?c.name:'',
-    date,startTime:from,endTime:to,zoomLink:zoom,
-    status:'scheduled',createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  const tempId=uid();
+
+  // Local object — NO serverTimestamp here (causes null in local state)
+  const sesLocal={
+    id:tempId, courseId, courseName:c?c.name:'',
+    date, startTime:from, endTime:to, zoomLink:zoom,
+    status:'scheduled',
+    createdAt:{seconds: Math.floor(Date.now()/1000)} // local approximation
   };
-  // Optimistic
-  sessions.unshift(ses);
+
+  // Firestore object — uses serverTimestamp, no id field
+  const sesFirestore={
+    courseId, courseName:c?c.name:'',
+    date, startTime:from, endTime:to, zoomLink:zoom,
+    status:'scheduled',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  // Optimistic: add locally immediately
+  sessions.unshift(sesLocal);
   renderSessions(); updateCounts();
-  $('ses-course').value=''; $('ses-date').value=''; $('ses-from').value=''; $('ses-to').value=''; $('ses-zoom').value='';
-  ['ses-course-err','ses-date-err','ses-time-err','ses-zoom-err'].forEach(e=>$(e).classList.remove('show'));
+
+  // Clear form
+  $('ses-course').value=''; $('ses-date').value='';
+  $('ses-from').value=''; $('ses-to').value=''; $('ses-zoom').value='';
+  ['ses-course-err','ses-date-err','ses-time-err','ses-zoom-err']
+    .forEach(e=>$(e).classList.remove('show'));
+
+  // Save to Firestore
   try{
     sync('saving');
-    const ref=await db.collection('sessions2').add({...ses,id:undefined});
-    // update local id
-    ses.id=ref.id; const idx=sessions.findIndex(s=>s===ses); if(idx>=0) sessions[idx].id=ref.id;
+    const ref = await db.collection('sessions2').add(sesFirestore);
+    // Update local id to match Firestore doc id
+    const idx = sessions.findIndex(s=>s.id===tempId);
+    if(idx>=0) sessions[idx].id = ref.id;
     sync('saved');
-    toast('✓ تمت إضافة الجلسة');
-  }catch(e){sync('saved');toast('⚠️ '+e.message);}
+    toast('✓ تمت إضافة المحاضرة وحفظها');
+  }catch(e){
+    // Remove optimistic entry on failure
+    sessions = sessions.filter(s=>s.id!==tempId);
+    renderSessions(); updateCounts();
+    sync('saved');
+    toast('⚠️ خطأ في الحفظ: '+e.message);
+  }
 }
 
 function renderSessions(){
   const list=$('sessions-list');
   const sched=sessions.filter(s=>s.status==='scheduled');
   if(!sched.length){
-    list.innerHTML='<div class="empty"><div class="empty-icon">📅</div><strong>لا توجد جلسات مجدولة</strong>أضف جلسة باستخدام النموذج الأخضر</div>';
+    list.innerHTML='<div class="empty"><div class="empty-icon">📅</div><strong>لا توجد محاضرات مجدولة</strong>أضف محاضرة باستخدام النموذج الأخضر</div>';
     return;
   }
   list.innerHTML=sched.map(s=>sessionCardHTML(s,true)).join('');
@@ -1741,7 +1787,7 @@ function sessionCardHTML(s, editBtns=false){
 function openSessionDetail(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
   const c=courses.find(x=>x.id===s.courseId);
-  $('ov-ses-title').textContent=s.courseName||c?.name||'جلسة';
+  $('ov-ses-title').textContent=s.courseName||c?.name||'محاضرة';
   const body=$('ov-ses-details');
   body.innerHTML=`
     <div class="info-row"><span class="info-lbl">الدورة</span><span class="info-val">${esc(s.courseName||c?.name||'—')}</span></div>
@@ -1797,7 +1843,7 @@ async function saveSessionEdit(id){
   }catch(e){sync('saved');toast('⚠️ '+e.message);}
 }
 async function deleteSession(id){
-  if(!confirm('حذف هذه الجلسة؟')) return;
+  if(!confirm('حذف هذه المحاضرة؟')) return;
   sessions=sessions.filter(s=>s.id!==id);
   renderSessions(); updateCounts();
   try{await db.collection('sessions2').doc(id).delete();toast('تم الحذف');}
@@ -1815,7 +1861,7 @@ function renderHistory(){
     return (order[a.status]||0)-(order[b.status]||0);
   });
   if(!all.length){
-    list.innerHTML='<div class="empty"><div class="empty-icon">📋</div><strong>لا توجد جلسات</strong>أضف جلسات من تبويب الجلسات</div>';
+    list.innerHTML='<div class="empty"><div class="empty-icon">📋</div><strong>لا توجد محاضرات</strong>أضف محاضرات من تبويب المحاضرات</div>';
     return;
   }
   list.innerHTML=all.map(s=>{
@@ -1841,7 +1887,7 @@ function renderHistory(){
           ${isCompleted?'':`<button class="btn btn-olive" style="font-size:12px;padding:8px 12px"
             onclick="event.stopPropagation();${isActive?'':'startSession(\''+s.id+'\')'}"
             ${isActive?'disabled':''}>
-            ${isActive?'🔴 نشطة':'▶ بدء الجلسة'}</button>`}
+            ${isActive?'🔴 نشطة':'▶ بدء المحاضرة'}</button>`}
           ${isActive?`<button class="btn btn-crimson" style="font-size:12px;padding:8px 12px"
             onclick="event.stopPropagation();openAttendanceOverlay('${s.id}')">⏹ إنهاء</button>`:''}
         </div>
@@ -1860,7 +1906,7 @@ async function loadHistory(){
 
 async function startSession(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
-  if(liveSessionId&&liveSessionId!==id){toast('⚠️ يوجد جلسة نشطة بالفعل');return;}
+  if(liveSessionId&&liveSessionId!==id){toast('⚠️ يوجد محاضرة نشطة بالفعل');return;}
   liveSessionId=id; liveStartTime=new Date(); s.status='active';
   liveAttendance={};
   const stus=students.filter(x=>x.courseId===s.courseId);
@@ -1875,7 +1921,7 @@ async function startSession(id){
 function openAttendanceOverlay(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
   const c=courses.find(x=>x.id===s.courseId);
-  $('att-overlay-title').textContent=(s.courseName||c?.name||'جلسة')+' — '+fmtDate(s.date);
+  $('att-overlay-title').textContent=(s.courseName||c?.name||'محاضرة')+' — '+fmtDate(s.date);
   renderAttStudents(s);
   // Timer
   clearInterval(liveTimerInterval);
@@ -1966,14 +2012,14 @@ async function saveSession(){
   try{
     sync('saving');
     await db.collection('sessions2').doc(s.id).update(update);
-    sync('saved'); toast('✓ تم حفظ الجلسة بنجاح');
+    sync('saved'); toast('✓ تم حفظ المحاضرة بنجاح');
   }catch(e){sync('saved');toast('⚠️ '+e.message);}
 }
 
 function showHistoryDetail(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
   const c=courses.find(x=>x.id===s.courseId);
-  $('hist-modal-title').textContent=s.courseName||c?.name||'جلسة';
+  $('hist-modal-title').textContent=s.courseName||c?.name||'محاضرة';
   const rate=s.total?Math.round((s.present/s.total)*100):0;
   const rateClass=rate>=80?'ab-green':rate>=50?'ab-amber':'ab-red';
   $('hist-modal-body').innerHTML=`
