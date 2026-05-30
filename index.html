@@ -552,7 +552,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
           <input type="text" class="app-title-input" id="app-title-input" style="display:none"
             onblur="saveAppTitle()" onkeydown="if(event.key==='Enter')saveAppTitle();if(event.key==='Escape'){this.style.display='none';$('app-title').style.display='block'}"/>
         </div>
-        <div class="app-subtitle">إدارة الدورات والطلاب والمحاضرات</div>
+        <div class="app-subtitle">إدارة الدورات والطلاب والجلسات</div>
       </div>
     </div>
     <div class="sync-badge" id="sync-badge"><span class="sync-dot"></span><span id="sync-lbl">محفوظ</span></div>
@@ -575,7 +575,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
   </button>
   <button class="tab-btn" id="tab-sessions-btn" onclick="switchTab('sessions')">
     <span class="tab-label-wrap" ondblclick="editTabLabel('sessions',event)">
-      <span id="tab-label-sessions">المحاضرات</span>
+      <span id="tab-label-sessions">الجلسات</span>
     </span>
     <span class="tab-count" id="tc-sessions">0</span>
   </button>
@@ -591,8 +591,8 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
   <div class="stat-grid" id="stat-grid" style="padding-top:14px">
     <div class="stat stat1"><div class="stat-num" id="s-courses">0</div><div class="stat-lbl">دورة</div></div>
     <div class="stat stat2"><div class="stat-num" id="s-students">0</div><div class="stat-lbl">طالب</div></div>
-    <div class="stat stat3"><div class="stat-num" id="s-sessions">0</div><div class="stat-lbl">محاضرة</div></div>
-    <div class="stat stat4"><div class="stat-num" id="s-completed">0</div><div class="stat-lbl">محاضرة مكتملة</div></div>
+    <div class="stat stat3"><div class="stat-num" id="s-sessions">0</div><div class="stat-lbl">جلسة</div></div>
+    <div class="stat stat4"><div class="stat-num" id="s-completed">0</div><div class="stat-lbl">جلسة مكتملة</div></div>
   </div>
 </div>
 
@@ -734,7 +734,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       <div class="section-title-wrap" onclick="editSectionTitle('add-ses-title')">
         <div class="section-title">
           <div class="section-title-num" style="background:var(--olive-bg);color:var(--olive)">+</div>
-          <span id="add-ses-title">إضافة محاضرة</span>
+          <span id="add-ses-title">إضافة جلسة</span>
           <span class="edit-title-hint">✏️</span>
         </div>
         <input class="section-title-input" id="add-ses-title-input" style="display:none"
@@ -750,37 +750,8 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
         <span class="err-msg" id="ses-course-err">يجب اختيار الدورة</span>
       </div>
       <div class="fg">
-        <label class="label">تاريخ المحاضرة</label>
-        <!-- Recurring toggle -->
-        <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap">
-          <button type="button" class="btn btn-ghost btn-sm" id="rec-once-btn"
-            onclick="setRecurring('once')"
-            style="flex:1;font-size:12px;background:var(--indigo);color:#fff;border-color:var(--indigo)">
-            مرة واحدة
-          </button>
-          <button type="button" class="btn btn-ghost btn-sm" id="rec-weekly-btn"
-            onclick="setRecurring('weekly')"
-            style="flex:1;font-size:12px">
-            أسبوعي 🔁
-          </button>
-          <button type="button" class="btn btn-ghost btn-sm" id="rec-biweekly-btn"
-            onclick="setRecurring('biweekly')"
-            style="flex:1;font-size:12px">
-            كل أسبوعين 🔁
-          </button>
-          <button type="button" class="btn btn-ghost btn-sm" id="rec-monthly-btn"
-            onclick="setRecurring('monthly')"
-            style="flex:1;font-size:12px">
-            شهري 🔁
-          </button>
-        </div>
-        <input class="input" type="date" id="ses-date" oninput="updateRecPreview()"/>
-        <!-- Recurring end date (hidden unless recurring selected) -->
-        <div id="rec-end-wrap" style="display:none;margin-top:6px">
-          <label class="label" style="font-size:11px;color:var(--ink3)">تاريخ انتهاء التكرار</label>
-          <input class="input" type="date" id="ses-date-end" oninput="updateRecPreview()"/>
-          <span style="font-size:11px;color:var(--ink3);margin-top:3px;display:block" id="rec-preview"></span>
-        </div>
+        <label class="label">تاريخ الجلسة</label>
+        <input class="input" type="date" id="ses-date"/>
         <span class="err-msg" id="ses-date-err">التاريخ مطلوب</span>
       </div>
       <div class="fg">
@@ -793,7 +764,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
         <span class="err-msg" id="ses-time-err">وقت البداية والنهاية مطلوبان</span>
       </div>
       <div class="fg">
-        <label class="label" id="label-ses-zoom">رابط Zoom للمحاضرة</label>
+        <label class="label" id="label-ses-zoom">رابط Zoom للجلسة</label>
         <input class="input ltr" id="ses-zoom" placeholder="https://zoom.us/j/..."/>
         <span class="err-msg" id="ses-zoom-err">رابط Zoom مطلوب</span>
       </div>
@@ -801,7 +772,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
     <div class="btn-row">
       <button class="btn btn-olive" id="btn-add-session" onclick="addSession()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-        إضافة المحاضرة
+        إضافة الجلسة
       </button>
     </div>
   </div>
@@ -811,7 +782,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       <div class="section-title-wrap" onclick="editSectionTitle('sched-title')">
         <div class="section-title">
           <div class="section-title-num">٢</div>
-          <span id="sched-title">الالمحاضرات المجدولة</span>
+          <span id="sched-title">الجلسات المجدولة</span>
           <span class="edit-title-hint">✏️</span>
         </div>
         <input class="section-title-input" id="sched-title-input" style="display:none"
@@ -886,7 +857,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       رجوع
     </button>
-    <div class="overlay-title"><span id="ov-ses-title">تفاصيل المحاضرة</span></div>
+    <div class="overlay-title"><span id="ov-ses-title">تفاصيل الجلسة</span></div>
   </div>
   <div class="overlay-body">
     <div class="section" style="margin-bottom:12px" id="ov-ses-details"></div>
@@ -898,7 +869,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
   <div class="overlay-header">
     <button class="overlay-back" onclick="confirmEndSession()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
-      إنهاء المحاضرة
+      إنهاء الجلسة
     </button>
     <div class="overlay-title"><span id="att-overlay-title">الحضور</span></div>
   </div>
@@ -907,7 +878,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       <div class="live-left">
         <div class="live-pulse"></div>
         <div>
-          <div class="live-label" id="live-status">🔴 محاضرة مباشرة</div>
+          <div class="live-label" id="live-status">🔴 جلسة مباشرة</div>
           <div class="live-timer" id="live-timer">00:00:00</div>
         </div>
       </div>
@@ -920,7 +891,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
     <div class="att-sticky-bar">
       <button class="btn btn-crimson" onclick="confirmEndSession()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
-        نهاية المحاضرة
+        نهاية الجلسة
       </button>
     </div>
   </div>
@@ -930,7 +901,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
 <div class="modal-wrap" id="mod-end">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-hd">
-      <div class="modal-title">⏹ إنهاء المحاضرة وحفظ النتائج</div>
+      <div class="modal-title">⏹ إنهاء الجلسة وحفظ النتائج</div>
       <button class="btn-icon" onclick="closeModal('mod-end')">✕</button>
     </div>
     <div id="end-summary"></div>
@@ -938,7 +909,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
     <div class="fg" style="margin-bottom:14px">
       <label class="label">رابط التسجيل (اختياري)</label>
       <input class="input ltr" id="rec-link" placeholder="https://zoom.us/rec/share/..."/>
-      <span style="font-size:11px;color:var(--ink3);margin-top:3px">إن سجّلت المحاضرة على Zoom Cloud، الصق رابط التسجيل هنا</span>
+      <span style="font-size:11px;color:var(--ink3);margin-top:3px">إن سجّلت الجلسة على Zoom Cloud، الصق رابط التسجيل هنا</span>
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="closeModal('mod-end')">إلغاء</button>
@@ -973,7 +944,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
 <div class="modal-wrap" id="mod-history" onclick="closeModal('mod-history')">
   <div class="modal" onclick="event.stopPropagation()" style="max-width:560px">
     <div class="modal-hd">
-      <div class="modal-title" id="hist-modal-title">تفاصيل المحاضرة</div>
+      <div class="modal-title" id="hist-modal-title">تفاصيل الجلسة</div>
       <button class="btn-icon" onclick="closeModal('mod-history')">✕</button>
     </div>
     <div id="hist-modal-body"></div>
@@ -1127,22 +1098,22 @@ function removeLogoImage(){
 // ══════════════════════════════════════════════
 const TRANSLATIONS = {
   ar: {
-    appSubtitle: 'إدارة الدورات والطلاب والمحاضرات',
-    tab1: 'الدورات', tab2: 'الطلاب', tab3: 'المحاضرات', tab4: 'السجل',
+    appSubtitle: 'إدارة الدورات والطلاب والجلسات',
+    tab1: 'الدورات', tab2: 'الطلاب', tab3: 'الجلسات', tab4: 'السجل',
     sec1Courses: 'إضافة دورة جديدة', sec2Courses: 'الدورات المتاحة',
     sec1Students: 'إضافة طالب جديد', sec2Students: 'قائمة الطلاب',
-    sec1Sessions: 'إضافة محاضرة', sec2Sessions: 'الالمحاضرات المجدولة',
+    sec1Sessions: 'إضافة جلسة', sec2Sessions: 'الجلسات المجدولة',
     secHistory: 'السجل',
     labelCourseName: 'اسم الدورة', labelZoom: 'رابط Zoom',
     btnAddCourse: 'إضافة الدورة',
     labelStuName: 'اسم الطالب', labelDob: 'تاريخ الميلاد',
     labelAge: 'العمر', labelCourse: 'الدورة',
     btnAddStudent: 'إضافة الطالب',
-    placeholderCourse: 'اختر الدورة', placeholderDate: 'تاريخ المحاضرة',
-    labelFrom: 'من', labelTo: 'إلى', labelSesZoom: 'رابط Zoom للمحاضرة',
-    btnAddSession: 'إضافة المحاضرة',
+    placeholderCourse: 'اختر الدورة', placeholderDate: 'تاريخ الجلسة',
+    labelFrom: 'من', labelTo: 'إلى', labelSesZoom: 'رابط Zoom للجلسة',
+    btnAddSession: 'إضافة الجلسة',
     btnShowCodes: '👁 إظهار الرموز', btnHideCodes: '🙈 إخفاء الرموز',
-    btnStartSession: '▶ بدء المحاضرة', btnEndSession: '⏹ إنهاء المحاضرة',
+    btnStartSession: '▶ بدء الجلسة', btnEndSession: '⏹ إنهاء الجلسة',
     btnAllPresent: '✓ الكل حاضر', btnAllAbsent: '✗ الكل غائب',
     btnPresent: 'حاضر ✓', btnAbsent: 'غائب ✗',
     btnSaveEnd: 'إنهاء وحفظ', btnOpenZoom: 'فتح Zoom',
@@ -1707,58 +1678,6 @@ function onSesCourseChange(){
   const c=courses.find(x=>x.id===id);
   if(c) $('ses-zoom').value=c.zoomLink||'';
 }
-async // ── RECURRING LECTURES ─────────────────────────────────────
-let recurringMode = 'once'; // 'once' | 'weekly' | 'biweekly' | 'monthly'
-
-function setRecurring(mode){
-  recurringMode = mode;
-  const btns = ['once','weekly','biweekly','monthly'];
-  btns.forEach(m => {
-    const btn = $('rec-'+m+'-btn');
-    if(btn){
-      if(m === mode){
-        btn.style.background = 'var(--indigo)';
-        btn.style.color = '#fff';
-        btn.style.borderColor = 'var(--indigo)';
-      } else {
-        btn.style.background = '';
-        btn.style.color = '';
-        btn.style.borderColor = '';
-      }
-    }
-  });
-  const wrap = $('rec-end-wrap');
-  if(wrap) wrap.style.display = mode === 'once' ? 'none' : 'block';
-  updateRecPreview();
-}
-
-function updateRecPreview(){
-  const preview = $('rec-preview');
-  if(!preview) return;
-  const startDate = $('ses-date').value;
-  const endDate = $('ses-date-end').value;
-  if(!startDate || !endDate || recurringMode === 'once'){ preview.textContent = ''; return; }
-  const dates = generateRecurringDates(startDate, endDate, recurringMode);
-  preview.textContent = '📅 سيتم إنشاء ' + dates.length + ' محاضرة';
-}
-
-function generateRecurringDates(startStr, endStr, mode){
-  const dates = [];
-  const start = new Date(startStr);
-  const end   = new Date(endStr);
-  if(isNaN(start) || isNaN(end) || end < start) return dates;
-  let current = new Date(start);
-  while(current <= end){
-    dates.push(current.toISOString().split('T')[0]);
-    if(mode === 'weekly')    current.setDate(current.getDate() + 7);
-    else if(mode === 'biweekly') current.setDate(current.getDate() + 14);
-    else if(mode === 'monthly')  current.setMonth(current.getMonth() + 1);
-    else break; // once
-    if(dates.length > 52) break; // safety cap: max 1 year
-  }
-  return dates;
-}
-
 async function addSession(){
   const courseId=$('ses-course').value;
   const date=$('ses-date').value;
@@ -1771,61 +1690,32 @@ async function addSession(){
   $('ses-time-err').classList.toggle('show',!from||!to); if(!from||!to) ok=false;
   $('ses-zoom-err').classList.toggle('show',!zoom); if(!zoom) ok=false;
   if(!ok) return;
-
   const c=courses.find(x=>x.id===courseId);
-
-  // Build list of dates to create
-  let datesToCreate = [date];
-  if(recurringMode !== 'once'){
-    const endDate = $('ses-date-end').value;
-    if(!endDate){ toast('⚠️ أدخل تاريخ انتهاء التكرار'); return; }
-    datesToCreate = generateRecurringDates(date, endDate, recurringMode);
-    if(!datesToCreate.length){ toast('⚠️ تاريخ الانتهاء قبل تاريخ البداية'); return; }
-  }
-
-  // Create all sessions
-  const newSessions = datesToCreate.map(d => ({
-    id: uid(), courseId, courseName: c?c.name:'',
-    date: d, startTime: from, endTime: to, zoomLink: zoom,
-    status: 'scheduled',
-    recurring: recurringMode !== 'once' ? recurringMode : null,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  }));
-
-  // Optimistic update
-  newSessions.forEach(ses => sessions.unshift(ses));
+  const ses={
+    id:uid(),courseId,courseName:c?c.name:'',
+    date,startTime:from,endTime:to,zoomLink:zoom,
+    status:'scheduled',createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  // Optimistic
+  sessions.unshift(ses);
   renderSessions(); updateCounts();
-
-  // Reset form
-  $('ses-course').value=''; $('ses-date').value=''; $('ses-from').value='';
-  $('ses-to').value=''; $('ses-zoom').value='';
-  if($('ses-date-end')) $('ses-date-end').value='';
-  if($('rec-preview')) $('rec-preview').textContent='';
+  $('ses-course').value=''; $('ses-date').value=''; $('ses-from').value=''; $('ses-to').value=''; $('ses-zoom').value='';
   ['ses-course-err','ses-date-err','ses-time-err','ses-zoom-err'].forEach(e=>$(e).classList.remove('show'));
-  setRecurring('once'); // reset to single
-
-  // Save to Firestore
   try{
     sync('saving');
-    for(const ses of newSessions){
-      const ref = await db.collection('sessions2').add({...ses, id:undefined});
-      ses.id = ref.id;
-      const idx = sessions.findIndex(s => s === ses);
-      if(idx >= 0) sessions[idx].id = ref.id;
-    }
+    const ref=await db.collection('sessions2').add({...ses,id:undefined});
+    // update local id
+    ses.id=ref.id; const idx=sessions.findIndex(s=>s===ses); if(idx>=0) sessions[idx].id=ref.id;
     sync('saved');
-    const msg = newSessions.length > 1
-      ? '✓ تمت إضافة ' + newSessions.length + ' محاضرة متكررة'
-      : '✓ تمت إضافة المحاضرة';
-    toast(msg);
-  }catch(e){ sync('saved'); toast('⚠️ '+e.message); }
+    toast('✓ تمت إضافة الجلسة');
+  }catch(e){sync('saved');toast('⚠️ '+e.message);}
 }
 
 function renderSessions(){
   const list=$('sessions-list');
   const sched=sessions.filter(s=>s.status==='scheduled');
   if(!sched.length){
-    list.innerHTML='<div class="empty"><div class="empty-icon">📅</div><strong>لا توجد محاضرات مجدولة</strong>أضف محاضرة باستخدام النموذج الأخضر</div>';
+    list.innerHTML='<div class="empty"><div class="empty-icon">📅</div><strong>لا توجد جلسات مجدولة</strong>أضف جلسة باستخدام النموذج الأخضر</div>';
     return;
   }
   list.innerHTML=sched.map(s=>sessionCardHTML(s,true)).join('');
@@ -1851,7 +1741,7 @@ function sessionCardHTML(s, editBtns=false){
 function openSessionDetail(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
   const c=courses.find(x=>x.id===s.courseId);
-  $('ov-ses-title').textContent=s.courseName||c?.name||'محاضرة';
+  $('ov-ses-title').textContent=s.courseName||c?.name||'جلسة';
   const body=$('ov-ses-details');
   body.innerHTML=`
     <div class="info-row"><span class="info-lbl">الدورة</span><span class="info-val">${esc(s.courseName||c?.name||'—')}</span></div>
@@ -1907,7 +1797,7 @@ async function saveSessionEdit(id){
   }catch(e){sync('saved');toast('⚠️ '+e.message);}
 }
 async function deleteSession(id){
-  if(!confirm('حذف هذه المحاضرة؟')) return;
+  if(!confirm('حذف هذه الجلسة؟')) return;
   sessions=sessions.filter(s=>s.id!==id);
   renderSessions(); updateCounts();
   try{await db.collection('sessions2').doc(id).delete();toast('تم الحذف');}
@@ -1925,7 +1815,7 @@ function renderHistory(){
     return (order[a.status]||0)-(order[b.status]||0);
   });
   if(!all.length){
-    list.innerHTML='<div class="empty"><div class="empty-icon">📋</div><strong>لا توجد محاضرات</strong>أضف محاضرات من تبويب المحاضرات</div>';
+    list.innerHTML='<div class="empty"><div class="empty-icon">📋</div><strong>لا توجد جلسات</strong>أضف جلسات من تبويب الجلسات</div>';
     return;
   }
   list.innerHTML=all.map(s=>{
@@ -1951,7 +1841,7 @@ function renderHistory(){
           ${isCompleted?'':`<button class="btn btn-olive" style="font-size:12px;padding:8px 12px"
             onclick="event.stopPropagation();${isActive?'':'startSession(\''+s.id+'\')'}"
             ${isActive?'disabled':''}>
-            ${isActive?'🔴 نشطة':'▶ بدء المحاضرة'}</button>`}
+            ${isActive?'🔴 نشطة':'▶ بدء الجلسة'}</button>`}
           ${isActive?`<button class="btn btn-crimson" style="font-size:12px;padding:8px 12px"
             onclick="event.stopPropagation();openAttendanceOverlay('${s.id}')">⏹ إنهاء</button>`:''}
         </div>
@@ -1970,7 +1860,7 @@ async function loadHistory(){
 
 async function startSession(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
-  if(liveSessionId&&liveSessionId!==id){toast('⚠️ يوجد محاضرة نشطة بالفعل');return;}
+  if(liveSessionId&&liveSessionId!==id){toast('⚠️ يوجد جلسة نشطة بالفعل');return;}
   liveSessionId=id; liveStartTime=new Date(); s.status='active';
   liveAttendance={};
   const stus=students.filter(x=>x.courseId===s.courseId);
@@ -1985,7 +1875,7 @@ async function startSession(id){
 function openAttendanceOverlay(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
   const c=courses.find(x=>x.id===s.courseId);
-  $('att-overlay-title').textContent=(s.courseName||c?.name||'محاضرة')+' — '+fmtDate(s.date);
+  $('att-overlay-title').textContent=(s.courseName||c?.name||'جلسة')+' — '+fmtDate(s.date);
   renderAttStudents(s);
   // Timer
   clearInterval(liveTimerInterval);
@@ -2076,14 +1966,14 @@ async function saveSession(){
   try{
     sync('saving');
     await db.collection('sessions2').doc(s.id).update(update);
-    sync('saved'); toast('✓ تم حفظ المحاضرة بنجاح');
+    sync('saved'); toast('✓ تم حفظ الجلسة بنجاح');
   }catch(e){sync('saved');toast('⚠️ '+e.message);}
 }
 
 function showHistoryDetail(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
   const c=courses.find(x=>x.id===s.courseId);
-  $('hist-modal-title').textContent=s.courseName||c?.name||'محاضرة';
+  $('hist-modal-title').textContent=s.courseName||c?.name||'جلسة';
   const rate=s.total?Math.round((s.present/s.total)*100):0;
   const rateClass=rate>=80?'ab-green':rate>=50?'ab-amber':'ab-red';
   $('hist-modal-body').innerHTML=`
