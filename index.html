@@ -556,6 +556,10 @@ html,body{background:var(--paper);color:var(--ink);font-family:var(--font-body);
       </div>
     </div>
     <div class="sync-badge" id="sync-badge"><span class="sync-dot"></span><span id="sync-lbl">محفوظ</span></div>
+    <div id="live-indicator" style="display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:var(--crimson-bg);border:1.5px solid var(--crimson);font-size:12px;font-weight:700;color:var(--crimson);cursor:pointer" onclick="switchTab('history')" title="انقر للذهاب للسجل">
+      <span style="width:8px;height:8px;border-radius:50%;background:var(--crimson);display:inline-block;animation:pulse-dot .9s infinite"></span>
+      <span id="live-indicator-text">محاضرة نشطة</span>
+    </div>
   </div>
 </header>
 
@@ -1251,6 +1255,21 @@ function initFirestore(){
     snap=>{
       sessions=[];
       snap.forEach(doc=>sessions.push({id:doc.id,...doc.data()}));
+      // ── Restore active session if page was reloaded ──
+      const active = sessions.find(s=>s.status==='active');
+      if(active && !liveSessionId){
+        liveSessionId = active.id;
+        // Restore timer
+        if(active.startedAtMs){
+          liveStartTime = new Date(active.startedAtMs);
+        } else if(active.startedAt && active.startedAt.toDate){
+          liveStartTime = active.startedAt.toDate();
+        }
+        // Restore attendance
+        if(active.liveAttendance && Object.keys(active.liveAttendance).length > 0){
+          liveAttendance = active.liveAttendance;
+        }
+      }
       renderSessions();
       renderHistory();
       updateCounts();
@@ -1267,6 +1286,13 @@ function initFirestore(){
           const tb=b.createdAt?.seconds||0;
           return tb-ta;
         });
+        // Restore active session state
+        const active = sessions.find(s=>s.status==='active');
+        if(active && !liveSessionId){
+          liveSessionId = active.id;
+          if(active.startedAtMs) liveStartTime = new Date(active.startedAtMs);
+          if(active.liveAttendance) liveAttendance = active.liveAttendance;
+        }
         renderSessions();
         renderHistory();
         updateCounts();
@@ -1419,6 +1445,16 @@ function updateCounts(){
   $('s-students').textContent = students.length;
   $('s-sessions').textContent = sessions.filter(s=>s.status!=='completed').length;
   $('s-completed').textContent = sessions.filter(s=>s.status==='completed').length;
+  // Live session indicator in header
+  const activeSessions = sessions.filter(s=>s.status==='active');
+  const indicator = $('live-indicator');
+  if(activeSessions.length > 0){
+    indicator.style.display = 'flex';
+    const names = activeSessions.map(s=>s.courseName||'محاضرة').join(' · ');
+    $('live-indicator-text').textContent = '🔴 نشطة: ' + names;
+  } else {
+    indicator.style.display = 'none';
+  }
 }
 function populateCourseDropdowns(){
   ['s-course','ses-course'].forEach(id=>{
@@ -1907,29 +1943,72 @@ async function loadHistory(){
 async function startSession(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
   if(liveSessionId&&liveSessionId!==id){toast('⚠️ يوجد محاضرة نشطة بالفعل');return;}
-  liveSessionId=id; liveStartTime=new Date(); s.status='active';
+
+  liveSessionId=id;
+  liveStartTime=new Date();
+  s.status='active';
   liveAttendance={};
+
   const stus=students.filter(x=>x.courseId===s.courseId);
   stus.forEach(x=>liveAttendance[x.id]='present');
-  renderHistory(); updateCounts();
+
+  // Save to Firestore immediately — status + startedAt + initial attendance
   try{
-    await db.collection('sessions2').doc(id).update({status:'active',startedAt:firebase.firestore.FieldValue.serverTimestamp()});
-  }catch(e){}
+    await db.collection('sessions2').doc(id).update({
+      status:'active',
+      startedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      startedAtMs: Date.now(),   // ← also save ms timestamp for reliable timer restore
+      liveAttendance: liveAttendance
+    });
+  }catch(e){ console.warn('startSession save error:',e); }
+
+  renderHistory(); updateCounts();
   openAttendanceOverlay(id);
 }
 
-function openAttendanceOverlay(id){
+async function openAttendanceOverlay(id){
   const s=sessions.find(x=>x.id===id); if(!s) return;
   const c=courses.find(x=>x.id===s.courseId);
+
+  // ── RESTORE STATE if we navigated away and came back ──
+  if(!liveStartTime || liveSessionId !== id){
+    liveSessionId = id;
+    // Load fresh data from Firestore
+    try{
+      const doc = await db.collection('sessions2').doc(id).get();
+      if(doc.exists){
+        const d = doc.data();
+        // Restore timer from saved ms timestamp
+        if(d.startedAtMs){
+          liveStartTime = new Date(d.startedAtMs);
+        } else if(d.startedAt){
+          liveStartTime = d.startedAt.toDate ? d.startedAt.toDate() : new Date();
+        } else {
+          liveStartTime = new Date();
+        }
+        // Restore attendance — DO NOT reset to all-present
+        if(d.liveAttendance && Object.keys(d.liveAttendance).length > 0){
+          liveAttendance = d.liveAttendance;
+        } else {
+          // First time — default all present
+          liveAttendance = {};
+          students.filter(x=>x.courseId===s.courseId).forEach(x=>liveAttendance[x.id]='present');
+        }
+      }
+    }catch(e){ console.warn('restore state error:',e); }
+  }
+
   $('att-overlay-title').textContent=(s.courseName||c?.name||'محاضرة')+' — '+fmtDate(s.date);
   renderAttStudents(s);
-  // Timer
+
+  // Timer — restart from saved startTime
   clearInterval(liveTimerInterval);
   liveTimerInterval=setInterval(()=>{
     if(!liveStartTime) return;
     const sec=Math.floor((Date.now()-liveStartTime.getTime())/1000);
     $('live-timer').textContent=pad(Math.floor(sec/3600))+':'+pad(Math.floor((sec%3600)/60))+':'+pad(sec%60);
   },1000);
+
   openOverlay('ov-attendance');
 }
 
@@ -1953,14 +2032,30 @@ function renderAttStudents(s){
 }
 function setAtt(stuId,status){
   liveAttendance[stuId]=status;
+  // Update UI immediately
   const row=$('attr-'+stuId); if(!row) return;
   row.className='att-row '+status;
   row.querySelectorAll('.att-pick').forEach(b=>b.classList.remove('on-p','on-a'));
-  row.querySelector(`.att-pick:${status==='present'?'first':'last'}-child`).classList.add(status==='present'?'on-p':'on-a');
+  row.querySelector(`.att-pick:${status==='present'?'first':'last'}-child`)
+     .classList.add(status==='present'?'on-p':'on-a');
+  // Save to Firestore immediately — so navigation doesn't lose data
+  if(liveSessionId){
+    db.collection('sessions2').doc(liveSessionId)
+      .update({liveAttendance: liveAttendance})
+      .catch(e=>console.warn('setAtt save:',e));
+  }
 }
+
 function markAllAtt(status){
   Object.keys(liveAttendance).forEach(id=>liveAttendance[id]=status);
-  if(liveSessionId){const s=sessions.find(x=>x.id===liveSessionId);if(s)renderAttStudents(s);}
+  if(liveSessionId){
+    const s=sessions.find(x=>x.id===liveSessionId);
+    if(s) renderAttStudents(s);
+    // Save all to Firestore
+    db.collection('sessions2').doc(liveSessionId)
+      .update({liveAttendance: liveAttendance})
+      .catch(e=>console.warn('markAll save:',e));
+  }
 }
 
 function confirmEndSession(){
